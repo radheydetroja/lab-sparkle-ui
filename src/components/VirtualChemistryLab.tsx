@@ -1,0 +1,318 @@
+import React, { useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
+import { Beaker, BookOpen, Trophy, Atom } from 'lucide-react';
+
+import { compounds as initialCompounds, reactions, achievements, Compound, Achievement } from '../data/compounds';
+import DiscoveryTab from './DiscoveryTab';
+import ReactionFlask from './ReactionFlask';
+import CompoundModal from './CompoundModal';
+import Achievements from './Achievements';
+
+const VirtualChemistryLab: React.FC = () => {
+  const [compounds, setCompounds] = useState(initialCompounds);
+  const [selectedCompound, setSelectedCompound] = useState<Compound | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [completedReactions, setCompletedReactions] = useState(0);
+  const [draggedCompound, setDraggedCompound] = useState<Compound | null>(null);
+  const { toast } = useToast();
+
+  // Sound effects (using Audio API)
+  const playSound = (type: string) => {
+    // In a real app, you'd have actual sound files
+    try {
+      const audio = new Audio();
+      switch (type) {
+        case 'discovery':
+          // Would play discovery.mp3
+          console.log('🎵 Discovery sound!');
+          break;
+        case 'reaction':
+          // Would play reaction.mp3
+          console.log('🎵 Reaction success sound!');
+          break;
+        case 'error':
+          // Would play error.mp3
+          console.log('🎵 Error sound!');
+          break;
+        case 'achievement':
+          // Would play achievement.mp3
+          console.log('🎵 Achievement unlocked sound!');
+          break;
+      }
+    } catch (e) {
+      console.log('Sound effect:', type);
+    }
+  };
+
+  const handleCompoundClick = (compound: Compound) => {
+    if (compound.discovered) {
+      setSelectedCompound(compound);
+      setModalOpen(true);
+    }
+  };
+
+  const discoverCompound = (compoundId: string, showToast = true) => {
+    setCompounds(prev => prev.map(compound => {
+      if (compound.id === compoundId && !compound.discovered) {
+        if (showToast) {
+          toast({
+            title: "New Compound Discovered! ✨",
+            description: `You discovered ${compound.name} (+${compound.points} points)`,
+            duration: 3000,
+          });
+          playSound('discovery');
+        }
+        return { ...compound, discovered: true };
+      }
+      return compound;
+    }));
+  };
+
+  const handleReaction = (compoundIds: string[]) => {
+    // Find matching reaction
+    const reaction = reactions.find(r => {
+      const sortedInputs = [...r.inputs].sort();
+      const sortedCompoundIds = [...compoundIds].sort();
+      return sortedInputs.length === sortedCompoundIds.length &&
+             sortedInputs.every((input, index) => input === sortedCompoundIds[index]);
+    });
+
+    if (reaction) {
+      // Success!
+      const product = compounds.find(c => c.id === reaction.output);
+      if (product && !product.discovered) {
+        discoverCompound(reaction.output);
+        setCompletedReactions(prev => prev + 1);
+        playSound('reaction');
+        
+        toast({
+          title: "Reaction Successful! ⚗️",
+          description: `Created ${product.name}!`,
+          duration: 3000,
+        });
+      } else if (product && product.discovered) {
+        toast({
+          title: "Reaction Complete ✅",
+          description: `You already know how to make ${product.name}`,
+          duration: 2000,
+        });
+        setCompletedReactions(prev => prev + 1);
+        playSound('reaction');
+      }
+      
+      return { success: true, product };
+    } else {
+      // Failure
+      playSound('error');
+      toast({
+        title: "Reaction Failed ❌",
+        description: "These compounds don't react together",
+        variant: "destructive",
+        duration: 2000,
+      });
+      
+      return { success: false };
+    }
+  };
+
+  // Calculate total stats
+  const totalPoints = compounds.filter(c => c.discovered).reduce((sum, c) => sum + c.points, 0);
+  const discoveredCount = compounds.filter(c => c.discovered).length;
+  const achievementPoints = achievements.filter(achievement => {
+    // Same logic as in Achievements component
+    const progress = calculateAchievementProgress(achievement);
+    const target = getAchievementTarget(achievement);
+    return progress >= target;
+  }).reduce((sum, a) => sum + a.points, 0);
+
+  const calculateAchievementProgress = (achievement: Achievement) => {
+    switch (achievement.id) {
+      case 'first_discovery':
+        return Math.min(discoveredCount, 1);
+      case 'element_master':
+        return compounds.filter(c => c.category === 'Element' && c.discovered).length;
+      case 'acid_master':
+        return compounds.filter(c => c.category === 'Acid' && c.discovered).length;
+      case 'reaction_expert':
+        return Math.min(completedReactions, 10);
+      case 'compound_collector':
+        return discoveredCount;
+      default:
+        return 0;
+    }
+  };
+
+  const getAchievementTarget = (achievement: Achievement) => {
+    switch (achievement.id) {
+      case 'first_discovery':
+        return 1;
+      case 'element_master':
+        return compounds.filter(c => c.category === 'Element').length;
+      case 'acid_master':
+        return compounds.filter(c => c.category === 'Acid').length;
+      case 'reaction_expert':
+        return 10;
+      case 'compound_collector':
+        return compounds.length;
+      default:
+        return 1;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-lab-primary to-lab-secondary text-white p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-3 mb-4">
+            <Atom className="w-8 h-8" />
+            <h1 className="text-3xl font-bold">Virtual Chemistry Lab Pro</h1>
+          </div>
+          <p className="text-lg opacity-90 mb-6">Master chemistry through discovery and experimentation!</p>
+          
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="bg-white/20 rounded-lg p-3">
+              <div className="text-2xl font-bold">{totalPoints + achievementPoints}</div>
+              <div className="text-sm opacity-90">Total Points</div>
+            </div>
+            <div className="bg-white/20 rounded-lg p-3">
+              <div className="text-2xl font-bold">{discoveredCount}</div>
+              <div className="text-sm opacity-90">Compounds</div>
+            </div>
+            <div className="bg-white/20 rounded-lg p-3">
+              <div className="text-2xl font-bold">{completedReactions}</div>
+              <div className="text-sm opacity-90">Reactions</div>
+            </div>
+            <div className="bg-white/20 rounded-lg p-3">
+              <div className="text-2xl font-bold">
+                {achievements.filter(a => {
+                  const progress = calculateAchievementProgress(a);
+                  const target = getAchievementTarget(a);
+                  return progress >= target;
+                }).length}
+              </div>
+              <div className="text-sm opacity-90">Achievements</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="max-w-6xl mx-auto p-6">
+        <Tabs defaultValue="discovery" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:w-fit">
+            <TabsTrigger value="lab" className="flex items-center gap-2">
+              <Beaker className="w-4 h-4" />
+              Lab
+            </TabsTrigger>
+            <TabsTrigger value="discovery" className="flex items-center gap-2">
+              <Atom className="w-4 h-4" />
+              Discovery
+            </TabsTrigger>
+            <TabsTrigger value="reactions" className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              Reactions
+            </TabsTrigger>
+            <TabsTrigger value="achievements" className="flex items-center gap-2">
+              <Trophy className="w-4 h-4" />
+              Achievements
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="lab" className="mt-6">
+            <div className="flex justify-center">
+              <ReactionFlask
+                onReaction={handleReaction}
+                compounds={compounds.filter(c => c.discovered)}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="discovery" className="mt-6">
+            <DiscoveryTab
+              compounds={compounds}
+              onCompoundClick={handleCompoundClick}
+              onDragStart={setDraggedCompound}
+              onDragEnd={() => setDraggedCompound(null)}
+            />
+          </TabsContent>
+
+          <TabsContent value="reactions" className="mt-6">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-primary">Reaction Guide</h2>
+              <div className="grid gap-4">
+                {reactions.map(reaction => {
+                  const isCompleted = compounds.find(c => c.id === reaction.output)?.discovered;
+                  const inputCompounds = reaction.inputs.map(id => compounds.find(c => c.id === id));
+                  const outputCompound = compounds.find(c => c.id === reaction.output);
+
+                  return (
+                    <div
+                      key={reaction.id}
+                      className={`p-4 rounded-lg border-2 transition-all ${
+                        isCompleted 
+                          ? 'bg-green-50 border-green-200' 
+                          : 'bg-gray-50 border-gray-200'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                           <div className="flex items-center gap-2">
+                             {inputCompounds.map((compound, index) => (
+                               <React.Fragment key={compound?.id}>
+                                 <span className="font-mono font-bold text-lab-primary">
+                                   {compound?.symbol}
+                                 </span>
+                                {index < inputCompounds.length - 1 && <span>+</span>}
+                              </React.Fragment>
+                            ))}
+                          </div>
+                          <span className="text-xl">→</span>
+                           <span className="font-mono font-bold text-lab-secondary">
+                             {outputCompound?.symbol}
+                           </span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          {isCompleted ? (
+                            <span className="text-green-600 font-bold">✅ Completed</span>
+                          ) : (
+                            <span className="text-gray-500">❌ Not completed</span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="mt-2">
+                        <h3 className="font-semibold">{reaction.name}</h3>
+                        <p className="text-sm text-muted-foreground">{reaction.description}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="achievements" className="mt-6">
+            <Achievements
+              achievements={achievements}
+              compounds={compounds}
+              completedReactions={completedReactions}
+            />
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Compound Modal */}
+      <CompoundModal
+        compound={selectedCompound}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
+    </div>
+  );
+};
+
+export default VirtualChemistryLab;

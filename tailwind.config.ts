@@ -24,6 +24,21 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				
+				// Lab-specific colors
+				'lab-primary': 'hsl(var(--lab-primary))',
+				'lab-primary-light': 'hsl(var(--lab-primary-light))',
+				'lab-secondary': 'hsl(var(--lab-secondary))',
+				'lab-accent': 'hsl(var(--lab-accent))',
+				'lab-warning': 'hsl(var(--lab-warning))',
+				'lab-danger': 'hsl(var(--lab-danger))',
+				
+				// Discovery states
+				'discovered': 'hsl(var(--discovered))',
+				'locked': 'hsl(var(--locked))',
+				'rare': 'hsl(var(--rare))',
+				'epic': 'hsl(var(--epic))',
+				'legendary': 'hsl(var(--legendary))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'

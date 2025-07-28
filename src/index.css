@@ -2,14 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* Chemistry Lab Design System - All colors, gradients, fonts, etc defined here. 
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Lab-inspired color palette */
+    --background: 248 100% 97%;
+    --foreground: 263 83% 20%;
+    
+    /* Chemistry lab colors */
+    --lab-primary: 263 83% 60%;
+    --lab-primary-light: 263 83% 75%;
+    --lab-secondary: 195 100% 65%;
+    --lab-accent: 142 76% 56%;
+    --lab-warning: 45 93% 58%;
+    --lab-danger: 0 84% 60%;
+    
+    /* Compound discovery states */
+    --discovered: 142 76% 56%;
+    --locked: 220 13% 69%;
+    --rare: 280 100% 70%;
+    --epic: 45 93% 58%;
+    --legendary: 25 95% 60%;
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -17,17 +33,17 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 263 83% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 195 100% 65%;
+    --secondary-foreground: 263 83% 20%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 248 40% 95%;
+    --muted-foreground: 263 20% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 142 76% 56%;
+    --accent-foreground: 263 83% 20%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -101,5 +117,82 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Lab-specific component styles */
+  .compound-card-discovered {
+    @apply bg-gradient-to-br from-white to-blue-50 border-2 border-primary/30 shadow-lg;
+    box-shadow: 0 4px 20px hsla(var(--primary), 0.15);
+  }
+  
+  .compound-card-locked {
+    @apply bg-gray-100 border border-gray-300 opacity-60;
+    filter: grayscale(100%) blur(1px);
+  }
+  
+  .compound-card-rare {
+    @apply border-purple-400;
+    box-shadow: 0 4px 20px hsla(var(--rare), 0.3);
+  }
+  
+  .compound-card-epic {
+    @apply border-yellow-400;
+    box-shadow: 0 4px 20px hsla(var(--epic), 0.3);
+  }
+  
+  .compound-card-legendary {
+    @apply border-orange-400;
+    box-shadow: 0 4px 20px hsla(var(--legendary), 0.3);
+  }
+  
+  .lab-flask {
+    background: radial-gradient(ellipse at bottom, #f0f9ff 0%, #e0e7ff 100%);
+    border: 3px solid hsl(var(--primary));
+    border-radius: 20px 20px 60px 60px;
+  }
+  
+  .lab-flask-active {
+    animation: glow-pulse 2s ease-in-out infinite alternate;
+  }
+  
+  .discovery-glow {
+    animation: discovery-sparkle 1.5s ease-out;
+  }
+  
+  @keyframes glow-pulse {
+    0% {
+      box-shadow: 0 0 20px hsla(var(--primary), 0.5);
+    }
+    100% {
+      box-shadow: 0 0 40px hsla(var(--primary), 0.8), 0 0 60px hsla(var(--primary), 0.4);
+    }
+  }
+  
+  @keyframes discovery-sparkle {
+    0% {
+      transform: scale(0.8) rotate(-10deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1) rotate(5deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  
+  .shake-animation {
+    animation: shake 0.5s ease-in-out;
   }
 }
