@@ -17,6 +17,42 @@ const VirtualChemistryLab: React.FC = () => {
   const [draggedCompound, setDraggedCompound] = useState<Compound | null>(null);
   const { toast } = useToast();
 
+  // Helper functions - declared first to avoid temporal dead zone errors
+  const calculateAchievementProgress = (achievement: Achievement) => {
+    const discoveredCount = compounds.filter(c => c.discovered).length;
+    switch (achievement.id) {
+      case 'first_discovery':
+        return Math.min(discoveredCount, 1);
+      case 'element_master':
+        return compounds.filter(c => c.category === 'Element' && c.discovered).length;
+      case 'acid_master':
+        return compounds.filter(c => c.category === 'Acid' && c.discovered).length;
+      case 'reaction_expert':
+        return Math.min(completedReactions, 10);
+      case 'compound_collector':
+        return discoveredCount;
+      default:
+        return 0;
+    }
+  };
+
+  const getAchievementTarget = (achievement: Achievement) => {
+    switch (achievement.id) {
+      case 'first_discovery':
+        return 1;
+      case 'element_master':
+        return compounds.filter(c => c.category === 'Element').length;
+      case 'acid_master':
+        return compounds.filter(c => c.category === 'Acid').length;
+      case 'reaction_expert':
+        return 10;
+      case 'compound_collector':
+        return compounds.length;
+      default:
+        return 1;
+    }
+  };
+
   // Sound effects (using Audio API)
   const playSound = (type: string) => {
     // In a real app, you'd have actual sound files
@@ -126,39 +162,6 @@ const VirtualChemistryLab: React.FC = () => {
     return progress >= target;
   }).reduce((sum, a) => sum + a.points, 0);
 
-  const calculateAchievementProgress = (achievement: Achievement) => {
-    switch (achievement.id) {
-      case 'first_discovery':
-        return Math.min(discoveredCount, 1);
-      case 'element_master':
-        return compounds.filter(c => c.category === 'Element' && c.discovered).length;
-      case 'acid_master':
-        return compounds.filter(c => c.category === 'Acid' && c.discovered).length;
-      case 'reaction_expert':
-        return Math.min(completedReactions, 10);
-      case 'compound_collector':
-        return discoveredCount;
-      default:
-        return 0;
-    }
-  };
-
-  const getAchievementTarget = (achievement: Achievement) => {
-    switch (achievement.id) {
-      case 'first_discovery':
-        return 1;
-      case 'element_master':
-        return compounds.filter(c => c.category === 'Element').length;
-      case 'acid_master':
-        return compounds.filter(c => c.category === 'Acid').length;
-      case 'reaction_expert':
-        return 10;
-      case 'compound_collector':
-        return compounds.length;
-      default:
-        return 1;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background">
