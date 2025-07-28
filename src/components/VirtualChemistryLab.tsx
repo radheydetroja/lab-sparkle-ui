@@ -225,11 +225,32 @@ const VirtualChemistryLab: React.FC = () => {
           </TabsList>
 
           <TabsContent value="lab" className="mt-6">
-            <div className="flex justify-center">
-              <ReactionFlask
-                onReaction={handleReaction}
-                compounds={compounds.filter(c => c.discovered)}
-              />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Compound Inventory */}
+              <div className="lg:col-span-2">
+                <DiscoveryTab
+                  compounds={compounds.filter(c => c.discovered)}
+                  onCompoundClick={handleCompoundClick}
+                  onDragStart={setDraggedCompound}
+                  onDragEnd={() => setDraggedCompound(null)}
+                />
+              </div>
+              
+              {/* Reaction Beaker */}
+              <div className="lg:col-span-1">
+                <div className="bg-white rounded-xl border-2 border-gray-200 p-6 sticky top-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                      <Beaker className="w-4 h-4 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-primary">Reaction Beaker</h3>
+                  </div>
+                  <ReactionFlask
+                    onReaction={handleReaction}
+                    compounds={compounds.filter(c => c.discovered)}
+                  />
+                </div>
+              </div>
             </div>
           </TabsContent>
 

@@ -35,88 +35,62 @@ const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ compounds, onCompoundClick,
 
   return (
     <div className="space-y-6">
-      {/* Header with stats */}
-      <div className="bg-gradient-to-r from-lab-primary to-lab-secondary text-white p-6 rounded-xl">
-        <h2 className="text-2xl font-bold mb-4">Compound Discovery</h2>
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div className="text-3xl font-bold">{totalPoints}</div>
-            <div className="text-sm opacity-90">Total Points</div>
+      {/* Compound Inventory Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <div className="w-4 h-4 bg-white rounded-sm" />
           </div>
           <div>
-            <div className="text-3xl font-bold">{discoveredCount}</div>
-            <div className="text-sm opacity-90">Compounds</div>
+            <h2 className="text-xl font-bold text-primary">Compound Inventory ({discoveredCount}/{totalCompounds})</h2>
+            <p className="text-sm text-muted-foreground">Drag compounds to the reaction beaker to create new substances</p>
           </div>
-          <div>
-            <div className="text-3xl font-bold">{Math.round((discoveredCount / totalCompounds) * 100)}%</div>
-            <div className="text-sm opacity-90">Progress</div>
-          </div>
-        </div>
-        
-        {/* Progress bar */}
-        <div className="mt-4 bg-white/20 rounded-full h-2">
-          <div 
-            className="bg-white rounded-full h-2 transition-all duration-500"
-            style={{ width: `${(discoveredCount / totalCompounds) * 100}%` }}
-          />
-        </div>
-        <div className="text-center text-sm mt-2 opacity-90">
-          Progress: {discoveredCount}/{totalCompounds} compounds discovered
         </div>
       </div>
 
       {/* Search and filters */}
-      <div className="space-y-4">
+      <div className="flex flex-wrap gap-3 items-center">
         {/* Search bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <div className="relative flex-1 min-w-64">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
             placeholder="Search compounds..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lab-primary focus:border-transparent"
+            className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
           />
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-3 items-center">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-500" />
-            <span className="text-sm font-medium text-gray-700">Category:</span>
-          </div>
-          
+        {/* Category filter */}
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+        >
           {categories.map((category, index) => (
-            <button
-              key={`category-${index}`}
-              onClick={() => setSelectedCategory(category as string)}
-              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                selectedCategory === category
-                  ? 'bg-lab-primary text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {category as string}
-            </button>
+            <option key={`category-${index}`} value={category as string}>
+              {category as string === 'All' ? 'All Categories' : category as string}
+            </option>
           ))}
-          
-          {/* Show discovered only toggle */}
-          <button
-            onClick={() => setShowDiscoveredOnly(!showDiscoveredOnly)}
-            className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-              showDiscoveredOnly
-                ? 'bg-lab-accent text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {showDiscoveredOnly ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            Discovered Only
-          </button>
-        </div>
+        </select>
+        
+        {/* Show discovered only toggle */}
+        <button
+          onClick={() => setShowDiscoveredOnly(!showDiscoveredOnly)}
+          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+            showDiscoveredOnly
+              ? 'bg-primary text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
+        >
+          {showDiscoveredOnly ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+          {showDiscoveredOnly ? 'Discovered Only' : 'Show All'}
+        </button>
       </div>
 
-      {/* Compounds grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {/* Compounds grid - matches the reference layout */}
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
         {filteredCompounds.map(compound => (
           <CompoundCard
             key={compound.id}

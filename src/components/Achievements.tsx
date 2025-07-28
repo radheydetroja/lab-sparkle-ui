@@ -60,13 +60,20 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements, compounds, co
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-primary mb-2">Achievements</h2>
-        <p className="text-muted-foreground">Complete challenges to earn badges and points</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <Trophy className="w-4 h-4 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-primary">Achievements ({achievements.filter(a => isUnlocked(a)).length}/{achievements.length})</h2>
+            <p className="text-sm text-muted-foreground">Unlock achievements by reaching milestones in your chemistry journey</p>
+          </div>
+        </div>
       </div>
 
-      {/* Achievements grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Achievements grid - 2x4 layout like the screenshot */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {achievements.map(achievement => {
           const progress = calculateProgress(achievement);
           const target = getRequirementTarget(achievement);
@@ -77,47 +84,54 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements, compounds, co
             <div
               key={achievement.id}
               className={`
-                relative p-6 rounded-xl border-2 transition-all duration-300
+                relative p-4 rounded-xl border-2 transition-all duration-300
                 ${unlocked 
-                  ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-300 shadow-lg hover:shadow-xl' 
+                  ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-300 shadow-md' 
                   : 'bg-gray-50 border-gray-200'
                 }
               `}
             >
-              {/* Achievement icon and status */}
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className={`text-3xl ${unlocked ? '' : 'grayscale opacity-50'}`}>
-                    {achievement.icon}
-                  </div>
-                  <div>
-                    <h3 className={`font-bold ${unlocked ? 'text-foreground' : 'text-gray-500'}`}>
-                      {achievement.name}
-                    </h3>
-                    <p className={`text-sm ${unlocked ? 'text-muted-foreground' : 'text-gray-400'}`}>
-                      {achievement.description}
-                    </p>
-                  </div>
+              {/* Icon and title */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`text-2xl ${unlocked ? '' : 'grayscale opacity-50'}`}>
+                  {achievement.icon}
+                </div>
+                <div className="flex-1">
+                  <h3 className={`font-bold text-sm ${unlocked ? 'text-gray-800' : 'text-gray-500'}`}>
+                    {achievement.name}
+                  </h3>
+                  <p className={`text-xs ${unlocked ? 'text-gray-600' : 'text-gray-400'}`}>
+                    {achievement.description}
+                  </p>
                 </div>
                 
-                {/* Status icon */}
+                {/* Status indicator */}
                 <div className="flex-shrink-0">
                   {unlocked ? (
-                    <CheckCircle className="w-6 h-6 text-green-500" />
+                    <div className="px-2 py-1 bg-green-100 text-green-800 text-xs font-bold rounded-full">
+                      ✅ Unlocked
+                    </div>
                   ) : (
-                    <Lock className="w-6 h-6 text-gray-400" />
+                    <div className="px-2 py-1 bg-gray-100 text-gray-500 text-xs font-medium rounded-full">
+                      🔒 Locked
+                    </div>
                   )}
                 </div>
               </div>
 
+              {/* Requirement text */}
+              <p className={`text-xs mb-2 ${unlocked ? 'text-gray-600' : 'text-gray-400'}`}>
+                {achievement.requirement}
+              </p>
+
               {/* Progress bar */}
               <div className="mb-3">
-                <div className="flex justify-between text-sm mb-1">
-                  <span className={unlocked ? 'text-muted-foreground' : 'text-gray-400'}>
-                    Progress
+                <div className="flex justify-between text-xs mb-1">
+                  <span className={unlocked ? 'text-gray-600' : 'text-gray-400'}>
+                    Progress: {progress}/{target}
                   </span>
-                  <span className={`font-medium ${unlocked ? 'text-foreground' : 'text-gray-500'}`}>
-                    {progress}/{target}
+                  <span className={`font-bold ${unlocked ? 'text-yellow-600' : 'text-gray-400'}`}>
+                    +{achievement.points} pts
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
@@ -132,20 +146,9 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements, compounds, co
                 </div>
               </div>
 
-              {/* Requirement and points */}
-              <div className="flex justify-between items-center">
-                <p className={`text-xs ${unlocked ? 'text-muted-foreground' : 'text-gray-400'}`}>
-                  {achievement.requirement}
-                </p>
-                <div className={`flex items-center gap-1 ${unlocked ? 'text-yellow-600' : 'text-gray-400'}`}>
-                  <Trophy className="w-4 h-4" />
-                  <span className="text-sm font-bold">+{achievement.points}</span>
-                </div>
-              </div>
-
               {/* Unlocked glow effect */}
               {unlocked && (
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 rounded-xl animate-pulse" />
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/10 to-orange-500/10 rounded-xl pointer-events-none" />
               )}
             </div>
           );
@@ -153,16 +156,18 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements, compounds, co
       </div>
 
       {/* Summary stats */}
-      <div className="bg-gradient-to-r from-lab-primary to-lab-secondary text-white p-4 rounded-xl">
-        <div className="flex justify-between items-center">
-          <div>
-            <div className="text-lg font-bold">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-gradient-to-r from-primary to-secondary text-white p-4 rounded-xl">
+          <div className="text-center">
+            <div className="text-2xl font-bold">
               {achievements.filter(a => isUnlocked(a)).length} / {achievements.length}
             </div>
             <div className="text-sm opacity-90">Achievements Unlocked</div>
           </div>
-          <div>
-            <div className="text-lg font-bold">
+        </div>
+        <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-4 rounded-xl">
+          <div className="text-center">
+            <div className="text-2xl font-bold">
               +{achievements.filter(a => isUnlocked(a)).reduce((sum, a) => sum + a.points, 0)}
             </div>
             <div className="text-sm opacity-90">Achievement Points</div>
