@@ -22,7 +22,7 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds }) 
     const compoundId = e.dataTransfer.getData('text/plain');
     const compound = compounds.find(c => c.id === compoundId);
     
-    if (compound && droppedCompounds.length < 3) {
+    if (compound) {
       setDroppedCompounds(prev => [...prev, compound]);
     }
   };
@@ -81,16 +81,16 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds }) 
             <div className="text-center text-muted-foreground">
               <Beaker className="w-12 h-12 mx-auto mb-2 opacity-50" />
               <p className="text-sm font-medium">Drop compounds here to react</p>
-              <p className="text-xs">Max 3 compounds per reaction</p>
+              <p className="text-xs">Add as many compounds as needed</p>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-3 gap-2 w-full max-w-48">
+              <div className="flex flex-wrap gap-2 w-full justify-center">
                 {droppedCompounds.map((compound, index) => (
                   <div key={`${compound.id}-${index}`} className="relative">
-                    <div className="text-center p-2 bg-white rounded-lg border shadow-sm">
+                    <div className="text-center p-2 bg-white rounded-lg border shadow-sm min-w-[60px]">
                       <div className="text-lg font-bold text-primary">{compound.symbol}</div>
-                      <div className="text-xs text-gray-600">{compound.name}</div>
+                      <div className="text-xs text-gray-600 truncate">{compound.name}</div>
                     </div>
                     <button
                       onClick={() => removeCompound(index)}
@@ -101,14 +101,10 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds }) 
                   </div>
                 ))}
                 
-                {/* Add more slots */}
-                {droppedCompounds.length < 3 && (
-                  Array.from({ length: 3 - droppedCompounds.length }).map((_, i) => (
-                    <div key={`empty-${i}`} className="w-full h-16 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                      <Plus className="w-6 h-6 text-gray-400" />
-                    </div>
-                  ))
-                )}
+                {/* Drop zone indicator */}
+                <div className="border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center min-w-[60px] h-16 px-4">
+                  <Plus className="w-6 h-6 text-gray-400" />
+                </div>
               </div>
             </>
           )}

@@ -27,10 +27,24 @@ const VirtualChemistryLab: React.FC = () => {
         return compounds.filter(c => c.category === 'Element' && c.discovered).length;
       case 'acid_master':
         return compounds.filter(c => c.category === 'Acid' && c.discovered).length;
+      case 'base_master':
+        return compounds.filter(c => c.category === 'Base' && c.discovered).length;
+      case 'salt_master':
+        return compounds.filter(c => c.category === 'Salt' && c.discovered).length;
+      case 'organic_master':
+        return compounds.filter(c => c.category === 'Organic' && c.discovered).length;
+      case 'gas_master':
+        return compounds.filter(c => c.category === 'Gas' && c.discovered).length;
+      case 'reaction_novice':
+        return Math.min(completedReactions, 5);
       case 'reaction_expert':
-        return Math.min(completedReactions, 10);
+        return Math.min(completedReactions, 20);
+      case 'reaction_master':
+        return Math.min(completedReactions, 50);
       case 'compound_collector':
         return discoveredCount;
+      case 'chemistry_legend':
+        return Math.min(completedReactions, reactions.length);
       default:
         return 0;
     }
@@ -44,36 +58,78 @@ const VirtualChemistryLab: React.FC = () => {
         return compounds.filter(c => c.category === 'Element').length;
       case 'acid_master':
         return compounds.filter(c => c.category === 'Acid').length;
+      case 'base_master':
+        return compounds.filter(c => c.category === 'Base').length;
+      case 'salt_master':
+        return compounds.filter(c => c.category === 'Salt').length;
+      case 'organic_master':
+        return compounds.filter(c => c.category === 'Organic').length;
+      case 'gas_master':
+        return compounds.filter(c => c.category === 'Gas').length;
+      case 'reaction_novice':
+        return 5;
       case 'reaction_expert':
-        return 10;
+        return 20;
+      case 'reaction_master':
+        return 50;
       case 'compound_collector':
         return compounds.length;
+      case 'chemistry_legend':
+        return reactions.length;
       default:
         return 1;
     }
   };
 
-  // Sound effects (using Audio API)
+  // Sound effects (using Web Audio API with synthetic sounds)
   const playSound = (type: string) => {
-    // In a real app, you'd have actual sound files
     try {
-      const audio = new Audio();
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
       switch (type) {
         case 'discovery':
-          // Would play discovery.mp3
-          console.log('🎵 Discovery sound!');
+          // Ascending chime
+          oscillator.frequency.setValueAtTime(523, audioContext.currentTime); // C5
+          oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1); // E5
+          oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2); // G5
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.5);
           break;
         case 'reaction':
-          // Would play reaction.mp3
-          console.log('🎵 Reaction success sound!');
+          // Bubbling sound
+          oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+          oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.3);
+          gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.4);
           break;
         case 'error':
-          // Would play error.mp3
-          console.log('🎵 Error sound!');
+          // Low buzz
+          oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
+          oscillator.type = 'square';
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.3);
           break;
         case 'achievement':
-          // Would play achievement.mp3
-          console.log('🎵 Achievement unlocked sound!');
+          // Victory fanfare
+          oscillator.frequency.setValueAtTime(392, audioContext.currentTime); // G4
+          oscillator.frequency.setValueAtTime(523, audioContext.currentTime + 0.15); // C5
+          oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.3); // E5
+          oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.45); // G5
+          gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.8);
           break;
       }
     } catch (e) {
@@ -98,6 +154,24 @@ const VirtualChemistryLab: React.FC = () => {
             duration: 3000,
           });
           playSound('discovery');
+          
+          // Check for new achievements
+          setTimeout(() => {
+            const newAchievements = achievements.filter(achievement => {
+              const oldProgress = calculateAchievementProgress(achievement);
+              const target = getAchievementTarget(achievement);
+              return oldProgress < target && oldProgress + 1 >= target;
+            });
+            
+            newAchievements.forEach(achievement => {
+              toast({
+                title: "Achievement Unlocked! 🏆",
+                description: `${achievement.name} (+${achievement.points} points)`,
+                duration: 4000,
+              });
+              playSound('achievement');
+            });
+          }, 500);
         }
         return { ...compound, discovered: true };
       }

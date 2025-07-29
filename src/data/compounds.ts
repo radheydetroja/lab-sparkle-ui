@@ -287,6 +287,172 @@ export const compounds: Compound[] = [
     synthesisHint: 'Advanced carbon-hydrogen synthesis'
   },
   {
+    id: 'c2h2',
+    name: 'Acetylene',
+    symbol: 'C₂H₂',
+    category: 'Organic',
+    rarity: 'rare',
+    description: 'Highly flammable welding gas',
+    mw: '26.038g/mol',
+    points: 45,
+    uses: ['Welding', 'Metal cutting', 'Chemical synthesis'],
+    discovered: false,
+    synthesisHint: 'Combine carbon with hydrogen or other organics'
+  },
+  {
+    id: 'c2h6o',
+    name: 'Ethanol',
+    symbol: 'C₂H₆O',
+    category: 'Organic',
+    rarity: 'uncommon',
+    description: 'Drinking alcohol and biofuel',
+    mw: '46.069g/mol',
+    points: 35,
+    uses: ['Alcoholic beverages', 'Fuel', 'Antiseptic', 'Solvent'],
+    discovered: false,
+    synthesisHint: 'Combine carbon with hydrogen or other organics'
+  },
+  {
+    id: 'c6h12o6',
+    name: 'Glucose',
+    symbol: 'C₆H₁₂O₆',
+    category: 'Organic',
+    rarity: 'epic',
+    description: 'Essential sugar for energy production',
+    mw: '180.156g/mol',
+    points: 100,
+    uses: ['Food energy', 'Diabetes treatment', 'Fermentation'],
+    discovered: false,
+    synthesisHint: 'Combine carbon with hydrogen or other organics'
+  },
+  {
+    id: 'p',
+    name: 'Phosphorus',
+    symbol: 'P',
+    category: 'Element',
+    rarity: 'common',
+    description: 'Essential element for DNA and bones',
+    mw: '30.974g/mol',
+    points: 0,
+    uses: ['Fertilizers', 'DNA', 'Bones', 'Matches'],
+    discovered: true
+  },
+  {
+    id: 'k',
+    name: 'Potassium',
+    symbol: 'K',
+    category: 'Element',
+    rarity: 'common',
+    description: 'Alkali metal essential for nerve function',
+    mw: '39.098g/mol',
+    points: 0,
+    uses: ['Fertilizers', 'Nerve function', 'Soap production'],
+    discovered: true
+  },
+  {
+    id: 'mg',
+    name: 'Magnesium',
+    symbol: 'Mg',
+    category: 'Element',
+    rarity: 'common',
+    description: 'Light metal essential for chlorophyll',
+    mw: '24.305g/mol',
+    points: 0,
+    uses: ['Alloys', 'Fireworks', 'Chlorophyll', 'Medicine'],
+    discovered: true
+  },
+  {
+    id: 'hno3',
+    name: 'Nitric Acid',
+    symbol: 'HNO₃',
+    category: 'Acid',
+    rarity: 'rare',
+    description: 'Strong acid used in explosives',
+    mw: '63.012g/mol',
+    points: 50,
+    uses: ['Explosives', 'Fertilizers', 'Metal etching'],
+    discovered: false,
+    synthesisHint: 'Complex multi-step synthesis from nitrogen'
+  },
+  {
+    id: 'h3po4',
+    name: 'Phosphoric Acid',
+    symbol: 'H₃PO₄',
+    category: 'Acid',
+    rarity: 'rare',
+    description: 'Acid used in soft drinks and fertilizers',
+    mw: '97.994g/mol',
+    points: 45,
+    uses: ['Soft drinks', 'Fertilizers', 'Rust removal'],
+    discovered: false,
+    synthesisHint: 'Complex multi-step synthesis from phosphorus'
+  },
+  {
+    id: 'koh',
+    name: 'Potassium Hydroxide',
+    symbol: 'KOH',
+    category: 'Base',
+    rarity: 'uncommon',
+    description: 'Strong base used in soap making',
+    mw: '56.106g/mol',
+    points: 30,
+    uses: ['Soap making', 'Batteries', 'Chemical production'],
+    discovered: false,
+    synthesisHint: 'React potassium with water'
+  },
+  {
+    id: 'mgoh2',
+    name: 'Magnesium Hydroxide',
+    symbol: 'Mg(OH)₂',
+    category: 'Base',
+    rarity: 'uncommon',
+    description: 'Milk of magnesia - antacid',
+    mw: '58.319g/mol',
+    points: 25,
+    uses: ['Antacid', 'Laxative', 'Fire retardant'],
+    discovered: false,
+    synthesisHint: 'React magnesium with water'
+  },
+  {
+    id: 'kcl',
+    name: 'Potassium Chloride',
+    symbol: 'KCl',
+    category: 'Salt',
+    rarity: 'common',
+    description: 'Salt substitute and fertilizer',
+    mw: '74.551g/mol',
+    points: 20,
+    uses: ['Salt substitute', 'Fertilizer', 'Medical treatment'],
+    discovered: false,
+    synthesisHint: 'Combine potassium and chlorine'
+  },
+  {
+    id: 'mgcl2',
+    name: 'Magnesium Chloride',
+    symbol: 'MgCl₂',
+    category: 'Salt',
+    rarity: 'common',
+    description: 'De-icing salt and supplement',
+    mw: '95.211g/mol',
+    points: 25,
+    uses: ['De-icing', 'Supplement', 'Cement production'],
+    discovered: false,
+    synthesisHint: 'Combine magnesium and chlorine'
+  },
+  {
+    id: 'cacl2',
+    name: 'Calcium Chloride',
+    symbol: 'CaCl₂',
+    category: 'Salt',
+    rarity: 'common',
+    description: 'De-icing agent and desiccant',
+    mw: '110.984g/mol',
+    points: 25,
+    uses: ['De-icing roads', 'Drying agent', 'Food additive'],
+    discovered: false,
+    synthesisHint: 'Combine calcium and chlorine'
+  },
+  {
     id: 'so2',
     name: 'Sulfur Dioxide',
     symbol: 'SO₂',
@@ -311,6 +477,71 @@ export const compounds: Compound[] = [
     uses: ['Sulfuric acid production', 'Sulfonation reactions'],
     discovered: false,
     synthesisHint: 'Oxidize sulfur dioxide'
+  },
+  {
+    id: 'no',
+    name: 'Nitrogen Oxide',
+    symbol: 'NO',
+    category: 'Gas',
+    rarity: 'uncommon',
+    description: 'Intermediate in nitric acid production',
+    mw: '30.006g/mol',
+    points: 25,
+    uses: ['Nitric acid production', 'Signaling molecule'],
+    discovered: false,
+    synthesisHint: 'Combine nitrogen and oxygen'
+  },
+  {
+    id: 'co',
+    name: 'Carbon Monoxide',
+    symbol: 'CO',
+    category: 'Gas',
+    rarity: 'uncommon',
+    description: 'Toxic gas from incomplete combustion',
+    mw: '28.010g/mol',
+    points: 25,
+    uses: ['Steel production', 'Chemical synthesis'],
+    discovered: false,
+    synthesisHint: 'Incomplete combustion of carbon'
+  },
+  {
+    id: 'p2o5',
+    name: 'Phosphorus Pentoxide',
+    symbol: 'P₂O₅',
+    category: 'Oxide',
+    rarity: 'rare',
+    description: 'Powerful dehydrating agent',
+    mw: '141.944g/mol',
+    points: 40,
+    uses: ['Drying agent', 'Phosphoric acid production'],
+    discovered: false,
+    synthesisHint: 'Burn phosphorus in excess oxygen'
+  },
+  {
+    id: 'mgo',
+    name: 'Magnesium Oxide',
+    symbol: 'MgO',
+    category: 'Oxide',
+    rarity: 'uncommon',
+    description: 'Refractory material and antacid',
+    mw: '40.304g/mol',
+    points: 25,
+    uses: ['Refractory bricks', 'Antacid', 'Supplements'],
+    discovered: false,
+    synthesisHint: 'Burn magnesium in oxygen'
+  },
+  {
+    id: 'k2o',
+    name: 'Potassium Oxide',
+    symbol: 'K₂O',
+    category: 'Oxide',
+    rarity: 'uncommon',
+    description: 'Basic oxide used in glass',
+    mw: '94.196g/mol',
+    points: 30,
+    uses: ['Glass production', 'Ceramics', 'Fertilizers'],
+    discovered: false,
+    synthesisHint: 'Burn potassium in oxygen'
   }
 ];
 
@@ -338,6 +569,13 @@ export const reactions: Reaction[] = [
     description: 'C + O + O → CO₂'
   },
   {
+    id: 'co',
+    inputs: ['c', 'o'],
+    output: 'co',
+    name: 'Carbon Monoxide Formation',
+    description: 'C + O → CO'
+  },
+  {
     id: 'hcl',
     inputs: ['h', 'cl'],
     output: 'hcl',
@@ -352,11 +590,60 @@ export const reactions: Reaction[] = [
     description: 'Ca + O → CaO'
   },
   {
+    id: 'mgo',
+    inputs: ['mg', 'o'],
+    output: 'mgo',
+    name: 'Magnesium Oxide Formation',
+    description: 'Mg + O → MgO'
+  },
+  {
+    id: 'k2o',
+    inputs: ['k', 'k', 'o'],
+    output: 'k2o',
+    name: 'Potassium Oxide Formation',
+    description: '2K + O → K₂O'
+  },
+  {
     id: 'naoh',
     inputs: ['na', 'h2o'],
     output: 'naoh',
     name: 'Sodium Hydroxide Formation',
     description: 'Na + H₂O → NaOH + H'
+  },
+  {
+    id: 'koh',
+    inputs: ['k', 'h2o'],
+    output: 'koh',
+    name: 'Potassium Hydroxide Formation',
+    description: 'K + H₂O → KOH + H'
+  },
+  {
+    id: 'mgoh2',
+    inputs: ['mg', 'h2o', 'h2o'],
+    output: 'mgoh2',
+    name: 'Magnesium Hydroxide Formation',
+    description: 'Mg + 2H₂O → Mg(OH)₂ + H₂'
+  },
+  {
+    id: 'kcl',
+    inputs: ['k', 'cl'],
+    output: 'kcl',
+    name: 'Potassium Chloride Formation',
+    description: 'K + Cl → KCl'
+  },
+  {
+    id: 'mgcl2',
+    inputs: ['mg', 'cl', 'cl'],
+    output: 'mgcl2',
+    name: 'Magnesium Chloride Formation',
+    description: 'Mg + 2Cl → MgCl₂'
+  },
+  {
+    id: 'cacl2',
+    inputs: ['ca', 'cl', 'cl'],
+    output: 'cacl2',
+    name: 'Calcium Chloride Formation',
+    description: 'Ca + 2Cl → CaCl₂'
   },
   {
     id: 'nh3',
@@ -387,11 +674,39 @@ export const reactions: Reaction[] = [
     description: 'SO₂ + O → SO₃'
   },
   {
+    id: 'no',
+    inputs: ['n', 'o'],
+    output: 'no',
+    name: 'Nitrogen Oxide Formation',
+    description: 'N + O → NO'
+  },
+  {
+    id: 'p2o5',
+    inputs: ['p', 'p', 'o', 'o', 'o', 'o', 'o'],
+    output: 'p2o5',
+    name: 'Phosphorus Pentoxide Formation',
+    description: '2P + 5O → P₂O₅'
+  },
+  {
     id: 'h2so4',
     inputs: ['so3', 'h2o'],
     output: 'h2so4',
     name: 'Sulfuric Acid Formation',
     description: 'SO₃ + H₂O → H₂SO₄'
+  },
+  {
+    id: 'hno3',
+    inputs: ['no', 'h2o', 'o'],
+    output: 'hno3',
+    name: 'Nitric Acid Formation',
+    description: 'NO + H₂O + O → HNO₃'
+  },
+  {
+    id: 'h3po4',
+    inputs: ['p2o5', 'h2o', 'h2o', 'h2o'],
+    output: 'h3po4',
+    name: 'Phosphoric Acid Formation',
+    description: 'P₂O₅ + 3H₂O → 2H₃PO₄'
   },
   {
     id: 'h2co3',
@@ -408,11 +723,32 @@ export const reactions: Reaction[] = [
     description: 'H₂CO₃ + 2NaOH → Na₂CO₃ + 2H₂O'
   },
   {
+    id: 'c2h2',
+    inputs: ['co', 'h', 'h'],
+    output: 'c2h2',
+    name: 'Acetylene Formation',
+    description: 'CO + 2H → C₂H₂'
+  },
+  {
     id: 'c2h4',
-    inputs: ['c', 'c', 'h', 'h', 'h', 'h'],
+    inputs: ['c2h2', 'h', 'h'],
     output: 'c2h4',
     name: 'Ethylene Formation',
-    description: 'Advanced organic synthesis'
+    description: 'C₂H₂ + 2H → C₂H₄'
+  },
+  {
+    id: 'c2h6o',
+    inputs: ['c2h4', 'h2o'],
+    output: 'c2h6o',
+    name: 'Ethanol Formation',
+    description: 'C₂H₄ + H₂O → C₂H₆O'
+  },
+  {
+    id: 'c6h12o6',
+    inputs: ['co2', 'co2', 'co2', 'co2', 'co2', 'co2', 'h2o', 'h2o', 'h2o', 'h2o', 'h2o', 'h2o'],
+    output: 'c6h12o6',
+    name: 'Glucose Synthesis (Photosynthesis)',
+    description: '6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂'
   }
 ];
 
@@ -429,7 +765,7 @@ export const achievements: Achievement[] = [
     id: 'element_master',
     name: 'Element Master',
     description: 'Discover all basic elements',
-    requirement: 'Discover all 8 elements',
+    requirement: 'Discover all 11 elements',
     points: 50,
     icon: '⚛️'
   },
@@ -437,24 +773,80 @@ export const achievements: Achievement[] = [
     id: 'acid_master',
     name: 'Acid Master',
     description: 'Discover all acids',
-    requirement: 'Discover all acid compounds',
-    points: 75,
+    requirement: 'Discover all 5 acid compounds',
+    points: 100,
     icon: '🧪'
+  },
+  {
+    id: 'base_master',
+    name: 'Base Master',
+    description: 'Discover all bases',
+    requirement: 'Discover all 5 base compounds',
+    points: 100,
+    icon: '🧼'
+  },
+  {
+    id: 'salt_master',
+    name: 'Salt Master',
+    description: 'Discover all salts',
+    requirement: 'Discover all 6 salt compounds',
+    points: 100,
+    icon: '🧂'
+  },
+  {
+    id: 'organic_master',
+    name: 'Organic Master',
+    description: 'Discover all organic compounds',
+    requirement: 'Discover all 6 organic compounds',
+    points: 150,
+    icon: '🧬'
+  },
+  {
+    id: 'gas_master',
+    name: 'Gas Master',
+    description: 'Discover all gases',
+    requirement: 'Discover all 6 gas compounds',
+    points: 100,
+    icon: '💨'
+  },
+  {
+    id: 'reaction_novice',
+    name: 'Reaction Novice',
+    description: 'Complete 5 successful reactions',
+    requirement: 'Complete 5 reactions',
+    points: 50,
+    icon: '⚗️'
   },
   {
     id: 'reaction_expert',
     name: 'Reaction Expert',
-    description: 'Complete 10 successful reactions',
-    requirement: 'Complete 10 reactions',
-    points: 100,
-    icon: '⚗️'
+    description: 'Complete 20 successful reactions',
+    requirement: 'Complete 20 reactions',
+    points: 150,
+    icon: '🔥'
+  },
+  {
+    id: 'reaction_master',
+    name: 'Reaction Master',
+    description: 'Complete 50 successful reactions',
+    requirement: 'Complete 50 reactions',
+    points: 300,
+    icon: '💫'
   },
   {
     id: 'compound_collector',
     name: 'Compound Collector',
     description: 'Discover all compounds',
     requirement: 'Discover all compounds',
-    points: 200,
+    points: 500,
     icon: '🏆'
+  },
+  {
+    id: 'chemistry_legend',
+    name: 'Chemistry Legend',
+    description: 'Complete every reaction in the lab',
+    requirement: 'Complete all 29 reactions',
+    points: 1000,
+    icon: '👑'
   }
 ];
