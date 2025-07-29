@@ -68,12 +68,16 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
     onDragStart?.(compound);
   };
 
+  const handleClick = () => {
+    // Allow clicking on both discovered and locked compounds
+    onClick?.(compound);
+  };
   return (
     <div
       className={`
         relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-300
         ${discovered ? getCategoryColor() : 'bg-gray-100 border-gray-300 opacity-60'}
-        ${discovered ? 'hover:scale-105 hover:shadow-lg' : 'cursor-not-allowed'}
+        ${discovered ? 'hover:scale-105 hover:shadow-lg' : 'hover:scale-105 hover:shadow-md'}
         ${isDragging ? 'opacity-50' : ''}
         ${isInFlask ? 'scale-90' : ''}
         ${discovered ? 'transform hover:-translate-y-1' : ''}
@@ -81,7 +85,7 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
       draggable={discovered}
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
-      onClick={() => discovered && onClick?.(compound)}
+      onClick={handleClick}
     >
       {/* Discovered indicator */}
       {discovered && (
@@ -131,6 +135,9 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
             <div className="mt-2 p-2 bg-gray-50 rounded-md">
               <p className="text-xs text-gray-600 italic">
                 💡 {synthesisHint || 'Recipe unknown'}
+              </p>
+              <p className="text-xs text-blue-600 font-medium mt-1">
+                Click to see requirements
               </p>
             </div>
           </>
