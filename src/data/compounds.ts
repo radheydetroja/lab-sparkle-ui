@@ -820,16 +820,16 @@ export const achievements: Achievement[] = [
   {
     id: 'reaction_expert',
     name: 'Reaction Expert',
-    description: 'Complete 20 successful reactions',
-    requirement: 'Complete 20 reactions',
+    description: 'Complete 15 successful reactions',
+    requirement: 'Complete 15 reactions',
     points: 150,
     icon: '🔥'
   },
   {
     id: 'reaction_master',
     name: 'Reaction Master',
-    description: 'Complete 50 successful reactions',
-    requirement: 'Complete 50 reactions',
+    description: 'Complete all reactions in the lab',
+    requirement: 'Complete all 29 reactions',
     points: 300,
     icon: '💫'
   },
@@ -844,8 +844,8 @@ export const achievements: Achievement[] = [
   {
     id: 'chemistry_legend',
     name: 'Chemistry Legend',
-    description: 'Complete every reaction in the lab',
-    requirement: 'Complete all 29 reactions',
+    description: 'Master of all chemistry achievements',
+    requirement: 'Unlock all other achievements',
     points: 1000,
     icon: '👑'
   }

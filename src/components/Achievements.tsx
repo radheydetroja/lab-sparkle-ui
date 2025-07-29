@@ -10,9 +10,10 @@ interface AchievementsProps {
 
 const Achievements: React.FC<AchievementsProps> = ({ achievements, compounds, completedReactions }) => {
   const calculateProgress = (achievement: Achievement) => {
+    const discoveredCount = compounds.filter(c => c.discovered).length;
+    
     switch (achievement.id) {
       case 'first_discovery':
-        const discoveredCount = compounds.filter(c => c.discovered).length;
         return Math.min(discoveredCount, 1);
       
       case 'element_master':
@@ -22,12 +23,44 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements, compounds, co
       case 'acid_master':
         const acids = compounds.filter(c => c.category === 'Acid' && c.discovered);
         return acids.length;
+        
+      case 'base_master':
+        const bases = compounds.filter(c => c.category === 'Base' && c.discovered);
+        return bases.length;
+        
+      case 'salt_master':
+        const salts = compounds.filter(c => c.category === 'Salt' && c.discovered);
+        return salts.length;
+        
+      case 'organic_master':
+        const organics = compounds.filter(c => c.category === 'Organic' && c.discovered);
+        return organics.length;
+        
+      case 'gas_master':
+        const gases = compounds.filter(c => c.category === 'Gas' && c.discovered);
+        return gases.length;
       
+      case 'reaction_novice':
+        return Math.min(completedReactions, 5);
+        
       case 'reaction_expert':
-        return Math.min(completedReactions, 10);
+        return Math.min(completedReactions, 15);
+        
+      case 'reaction_master':
+        return Math.min(completedReactions, 29);
       
       case 'compound_collector':
-        return compounds.filter(c => c.discovered).length;
+        return discoveredCount;
+        
+      case 'chemistry_legend':
+        // Check if all other achievements are unlocked
+        const otherAchievements = achievements.filter(a => a.id !== 'chemistry_legend');
+        const unlockedOthers = otherAchievements.filter(a => {
+          const progress = calculateProgress(a);
+          const target = getRequirementTarget(a);
+          return progress >= target;
+        }).length;
+        return unlockedOthers;
       
       default:
         return 0;
@@ -42,10 +75,24 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements, compounds, co
         return compounds.filter(c => c.category === 'Element').length;
       case 'acid_master':
         return compounds.filter(c => c.category === 'Acid').length;
+      case 'base_master':
+        return compounds.filter(c => c.category === 'Base').length;
+      case 'salt_master':
+        return compounds.filter(c => c.category === 'Salt').length;
+      case 'organic_master':
+        return compounds.filter(c => c.category === 'Organic').length;
+      case 'gas_master':
+        return compounds.filter(c => c.category === 'Gas').length;
+      case 'reaction_novice':
+        return 5;
       case 'reaction_expert':
-        return 10;
+        return 15;
+      case 'reaction_master':
+        return 29;
       case 'compound_collector':
         return compounds.length;
+      case 'chemistry_legend':
+        return achievements.filter(a => a.id !== 'chemistry_legend').length;
       default:
         return 1;
     }

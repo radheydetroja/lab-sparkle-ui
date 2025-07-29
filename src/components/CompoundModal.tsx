@@ -1,6 +1,6 @@
 import React from 'react';
-import { X, Sparkles, Beaker } from 'lucide-react';
-import { Compound } from '../data/compounds';
+import { X, Sparkles, Beaker, FlaskConical } from 'lucide-react';
+import { Compound, reactions } from '../data/compounds';
 
 interface CompoundModalProps {
   compound: Compound | null;
@@ -12,6 +12,11 @@ const CompoundModal: React.FC<CompoundModalProps> = ({ compound, isOpen, onClose
   if (!isOpen || !compound) return null;
 
   const { name, symbol, category, rarity, description, mw, points, uses, discovered } = compound;
+
+  // Find reaction that produces this compound
+  const findProductionReaction = () => {
+    return reactions.find(reaction => reaction.output === compound.id);
+  };
 
   const getRarityColor = () => {
     switch (rarity) {
@@ -92,19 +97,45 @@ const CompoundModal: React.FC<CompoundModalProps> = ({ compound, isOpen, onClose
             </div>
           )}
 
-          {/* Discovery status */}
-          <div className={`p-3 rounded-lg ${discovered ? 'bg-green-50 border border-green-200' : 'bg-gray-50 border border-gray-200'}`}>
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${discovered ? 'bg-green-500' : 'bg-gray-400'}`} />
+          {/* Discovery status and reaction */}
+          <div className={`p-3 rounded-lg ${discovered ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <div className={`w-2 h-2 rounded-full ${discovered ? 'bg-green-500' : 'bg-yellow-500'}`} />
               <span className="text-sm font-medium">
                 {discovered ? 'Discovered' : 'Not Yet Discovered'}
               </span>
             </div>
-            {!discovered && compound.synthesisHint && (
-              <p className="text-xs text-gray-600 mt-1 italic">
-                Hint: {compound.synthesisHint}
-              </p>
-            )}
+            
+            {!discovered && (() => {
+              const reaction = findProductionReaction();
+              if (reaction) {
+                return (
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FlaskConical className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-600">Synthesis Reaction</span>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg border">
+                      <div className="text-sm font-medium text-gray-800 mb-1">{reaction.name}</div>
+                      <div className="text-xs text-gray-600 font-mono">{reaction.description}</div>
+                      <div className="mt-2">
+                        <span className="text-xs text-gray-500">Required components: </span>
+                        <span className="text-xs font-medium text-blue-600">
+                          {reaction.inputs.map(input => input.toUpperCase()).join(', ')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              } else if (compound.synthesisHint) {
+                return (
+                  <p className="text-xs text-gray-600 mt-1 italic">
+                    Hint: {compound.synthesisHint}
+                  </p>
+                );
+              }
+              return null;
+            })()}
           </div>
         </div>
       </div>
