@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Sparkles, Beaker, FlaskConical } from 'lucide-react';
-import { Compound, reactions, compounds } from '../data/compounds';
+import { Compound, reactions } from '../data/compounds';
 
 interface CompoundModalProps {
   compound: Compound | null;
@@ -18,10 +18,6 @@ const CompoundModal: React.FC<CompoundModalProps> = ({ compound, isOpen, onClose
     return reactions.find(reaction => reaction.output === compound.id);
   };
 
-  // Get compound details by ID
-  const getCompoundById = (id: string) => {
-    return compounds.find(c => c.id === id);
-  };
   const getRarityColor = () => {
     switch (rarity) {
       case 'rare':
@@ -113,7 +109,6 @@ const CompoundModal: React.FC<CompoundModalProps> = ({ compound, isOpen, onClose
             {!discovered && (() => {
               const reaction = findProductionReaction();
               if (reaction) {
-                const inputCompounds = reaction.inputs.map(inputId => getCompoundById(inputId)).filter(Boolean);
                 return (
                   <div className="mt-3">
                     <div className="flex items-center gap-2 mb-2">
@@ -123,29 +118,11 @@ const CompoundModal: React.FC<CompoundModalProps> = ({ compound, isOpen, onClose
                     <div className="bg-white p-3 rounded-lg border">
                       <div className="text-sm font-medium text-gray-800 mb-1">{reaction.name}</div>
                       <div className="text-xs text-gray-600 font-mono">{reaction.description}</div>
-                      
-                      <div className="space-y-2">
-                        <div className="text-xs font-medium text-gray-700">Required Compounds:</div>
-                        <div className="grid grid-cols-2 gap-2">
-                          {inputCompounds.map((inputCompound, index) => (
-                            <div key={`${inputCompound.id}-${index}`} className="flex items-center gap-2 p-2 bg-gray-50 rounded-md">
-                              <div className="text-sm font-bold text-lab-primary">{inputCompound.symbol}</div>
-                              <div className="text-xs text-gray-600">{inputCompound.name}</div>
-                              <div className={`w-2 h-2 rounded-full ml-auto ${inputCompound.discovered ? 'bg-green-500' : 'bg-red-500'}`} />
-                            </div>
-                          ))}
-                        </div>
-                        
-                        <div className="mt-3 p-2 bg-blue-50 rounded-md">
-                          <div className="text-xs text-blue-700">
-                            <strong>How to unlock:</strong> Drag the required compounds into the reaction beaker to synthesize this compound.
-                            {inputCompounds.some(c => !c.discovered) && (
-                              <span className="block mt-1 text-red-600">
-                                ⚠️ Some required compounds are not yet discovered.
-                              </span>
-                            )}
-                          </div>
-                        </div>
+                      <div className="mt-2">
+                        <span className="text-xs text-gray-500">Required components: </span>
+                        <span className="text-xs font-medium text-blue-600">
+                          {reaction.inputs.map(input => input.toUpperCase()).join(', ')}
+                        </span>
                       </div>
                     </div>
                   </div>
