@@ -118,54 +118,58 @@ const CompoundModal: React.FC<CompoundModalProps> = ({ compound, isOpen, onClose
                   <div className="mt-3">
                     <div className="flex items-center gap-2 mb-2">
                       <FlaskConical className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-medium text-blue-600">How to Unlock</span>
+                      <span className="text-sm font-medium text-blue-600">Compounds Needed to Unlock</span>
                     </div>
-                    <div className="bg-white p-3 rounded-lg border">
-                      <div className="text-sm font-medium text-gray-800 mb-2">{reaction.name}</div>
-                      <div className="text-xs text-gray-600 font-mono mb-3">{reaction.description}</div>
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                      <p className="text-sm text-blue-800 mb-3">
+                        To unlock this compound, you need the following compounds:
+                      </p>
                       
-                      <div className="space-y-2">
-                        <span className="text-xs font-medium text-gray-700">Required Compounds:</span>
-                        <div className="grid grid-cols-2 gap-2">
-                          {reaction.inputs.map((inputId, index) => {
-                            const inputCompound = getCompoundInfo(inputId);
-                            if (inputCompound) {
-                              return (
-                                <div key={index} className={`p-2 rounded-lg border text-center ${inputCompound.discovered ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-                                  <div className="text-lg font-bold text-lab-primary">{inputCompound.symbol}</div>
-                                  <div className="text-xs font-medium">{inputCompound.name}</div>
-                                  <div className={`text-xs ${inputCompound.discovered ? 'text-green-600' : 'text-red-600'}`}>
-                                    {inputCompound.discovered ? '✓ Available' : '✗ Locked'}
-                                  </div>
-                                </div>
-                              );
-                            }
+                      <div className="grid grid-cols-2 gap-3">
+                        {reaction.inputs.map((inputId, index) => {
+                          const inputCompound = getCompoundInfo(inputId);
+                          if (inputCompound) {
                             return (
-                              <div key={index} className="p-2 rounded-lg border bg-gray-50 border-gray-200 text-center">
-                                <div className="text-lg font-bold text-lab-primary">{inputId.toUpperCase()}</div>
-                                <div className="text-xs text-gray-600">Unknown</div>
+                              <div key={index} className={`p-3 rounded-lg border-2 text-center ${inputCompound.discovered ? 'bg-green-50 border-green-300' : 'bg-red-50 border-red-300'}`}>
+                                <div className="text-2xl font-bold text-gray-800">{inputCompound.symbol}</div>
+                                <div className="text-sm font-medium text-gray-700">{inputCompound.name}</div>
+                                <div className="text-xs text-gray-600">{inputCompound.category}</div>
+                                <div className={`text-xs font-medium mt-1 ${inputCompound.discovered ? 'text-green-600' : 'text-red-600'}`}>
+                                  {inputCompound.discovered ? '✓ Available' : '✗ Not Discovered'}
+                                </div>
                               </div>
                             );
-                          })}
-                        </div>
+                          }
+                          return (
+                            <div key={index} className="p-3 rounded-lg border-2 bg-gray-50 border-gray-300 text-center">
+                              <div className="text-2xl font-bold text-gray-800">{inputId.toUpperCase()}</div>
+                              <div className="text-sm text-gray-600">Unknown Compound</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      
+                      <div className="mt-3 p-2 bg-white rounded border">
+                        <div className="text-xs font-medium text-gray-700 mb-1">Reaction:</div>
+                        <div className="text-sm font-mono text-blue-700">{reaction.description}</div>
                       </div>
                     </div>
                   </div>
                 );
-              } else if (compound.synthesisHint) {
-                return (
-                  <div className="mt-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FlaskConical className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-medium text-blue-600">Synthesis Hint</span>
-                    </div>
-                    <div className="bg-white p-3 rounded-lg border">
-                      <p className="text-sm text-gray-600 italic">{compound.synthesisHint}</p>
-                    </div>
-                  </div>
-                );
               }
-              return null;
+              return (
+                <div className="mt-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <FlaskConical className="w-4 h-4 text-amber-600" />
+                    <span className="text-sm font-medium text-amber-600">Discovery Method Unknown</span>
+                  </div>
+                  <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+                    <p className="text-sm text-amber-700">
+                      The method to discover this compound is not yet known. Keep experimenting!
+                    </p>
+                  </div>
+                </div>
+              );
             })()}
           </div>
         </div>

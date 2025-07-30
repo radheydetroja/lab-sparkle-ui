@@ -72,26 +72,26 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
     <div
       className={`
         relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-300
-        ${discovered ? getCategoryColor() : 'bg-gray-100 border-gray-300 opacity-60'}
-        ${discovered ? 'hover:scale-105 hover:shadow-lg' : 'cursor-not-allowed'}
+        ${discovered ? getCategoryColor() : 'bg-gray-100 border-gray-300'}
+        ${discovered ? 'hover:scale-105 hover:shadow-lg' : 'hover:scale-105'}
         ${isDragging ? 'opacity-50' : ''}
         ${isInFlask ? 'scale-90' : ''}
-        ${discovered ? 'transform hover:-translate-y-1' : ''}
+        ${discovered ? 'transform hover:-translate-y-1' : 'transform hover:-translate-y-1'}
       `}
       draggable={discovered}
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
-      onClick={() => discovered && onClick?.(compound)}
+      onClick={() => onClick?.(compound)}
     >
       {/* Discovered indicator */}
       {discovered && (
         <div className="absolute top-1 right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
       )}
 
-      {/* Lock overlay for undiscovered compounds */}
+      {/* Lock indicator for undiscovered compounds */}
       {!discovered && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-500/20 rounded-lg backdrop-blur-sm">
-          <Lock className="w-6 h-6 text-gray-500" />
+        <div className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm">
+          <Lock className="w-4 h-4 text-gray-500" />
         </div>
       )}
 
