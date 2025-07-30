@@ -71,10 +71,10 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
   return (
     <div
       className={`
-        relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-300
+        relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 flask-cursor
         ${discovered ? getCategoryColor() : 'bg-gray-100 border-gray-300'}
         ${discovered ? 'hover:scale-105 hover:shadow-lg' : 'hover:scale-105'}
-        ${isDragging ? 'opacity-50' : ''}
+        ${isDragging ? 'opacity-50 dragging' : ''}
         ${isInFlask ? 'scale-90' : ''}
         ${discovered ? 'transform hover:-translate-y-1' : 'transform hover:-translate-y-1'}
       `}

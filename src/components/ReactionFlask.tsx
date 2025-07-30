@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Beaker, Plus, X } from 'lucide-react';
-import CompoundCard from './CompoundCard';
+import { Beaker, X, Zap } from 'lucide-react';
 import { Compound } from '../data/compounds';
 
 interface ReactionFlaskProps {
-  onReaction: (compoundIds: string[]) => { success: boolean; product?: Compound };
+  onReaction: (compoundIds: string[]) => { success: boolean; message: string; discoveredCompound?: string };
   compounds: Compound[];
+  playSound: (type: string) => void;
 }
 
-const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds }) => {
+const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds, playSound }) => {
   const [droppedCompounds, setDroppedCompounds] = useState<Compound[]>([]);
   const [isReacting, setIsReacting] = useState(false);
   const [shakeError, setShakeError] = useState(false);
@@ -22,13 +22,14 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds }) 
     const compoundId = e.dataTransfer.getData('text/plain');
     const compound = compounds.find(c => c.id === compoundId);
     
-    if (compound) {
+    if (compound && !droppedCompounds.find(c => c.id === compoundId)) {
       setDroppedCompounds(prev => [...prev, compound]);
+      playSound('drop'); // Play drop sound
     }
   };
 
-  const removeCompound = (index: number) => {
-    setDroppedCompounds(prev => prev.filter((_, i) => i !== index));
+  const removeCompound = (compoundId: string) => {
+    setDroppedCompounds(prev => prev.filter(c => c.id !== compoundId));
   };
 
   const clearFlask = () => {
@@ -36,23 +37,29 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds }) 
   };
 
   const performReaction = () => {
-    if (droppedCompounds.length < 2) return;
+    if (!canReact) return;
 
     setIsReacting(true);
+    playSound('mix'); // Play mixing sound when starting reaction
     
-    // Simulate reaction delay
+    // Simulate reaction delay with bubbling sounds
+    const bubbleInterval = setInterval(() => {
+      playSound('bubble');
+    }, 300);
+    
     setTimeout(() => {
+      clearInterval(bubbleInterval);
       const result = onReaction(droppedCompounds.map(c => c.id));
       
       if (result.success) {
         // Success - clear flask and show success animation
         setDroppedCompounds([]);
-        // Add success sound effect here
+        playSound('reaction'); // Play success reaction sound
       } else {
         // Failure - shake animation
         setShakeError(true);
         setTimeout(() => setShakeError(false), 500);
-        // Add error sound effect here
+        playSound('error'); // Play error sound
       }
       
       setIsReacting(false);
@@ -67,92 +74,71 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds }) 
       <div
         className={`
           relative w-full h-48 rounded-xl border-2 border-dashed border-gray-300
-          flex flex-col items-center justify-center transition-all duration-300
-          ${isReacting ? 'border-primary bg-primary/5' : ''}
-          ${shakeError ? 'shake-animation border-red-500 bg-red-50' : ''}
-          ${droppedCompounds.length > 0 ? 'border-primary bg-blue-50' : ''}
+          flex flex-col items-center justify-center transition-all duration-300 flask-cursor
+          ${droppedCompounds.length > 0 ? 'border-lab-primary bg-lab-flask/20' : ''}
+          ${isReacting ? 'lab-flask-active animate-pulse' : ''}
+          ${shakeError ? 'shake-animation' : ''}
         `}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        {/* Flask contents */}
-        <div className="flex flex-col items-center justify-center space-y-3 p-4">
-          {droppedCompounds.length === 0 ? (
-            <div className="text-center text-muted-foreground">
-              <Beaker className="w-12 h-12 mx-auto mb-2 opacity-50" />
-              <p className="text-sm font-medium">Drop compounds here to react</p>
-              <p className="text-xs">Add as many compounds as needed</p>
-            </div>
-          ) : (
-            <>
-              <div className="flex flex-wrap gap-2 w-full justify-center">
-                {droppedCompounds.map((compound, index) => (
-                  <div key={`${compound.id}-${index}`} className="relative">
-                    <div className="text-center p-2 bg-white rounded-lg border shadow-sm min-w-[60px]">
-                      <div className="text-lg font-bold text-primary">{compound.symbol}</div>
-                      <div className="text-xs text-gray-600 truncate">{compound.name}</div>
-                    </div>
-                    <button
-                      onClick={() => removeCompound(index)}
-                      className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-                
-                {/* Drop zone indicator */}
-                <div className="border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center min-w-[60px] h-16 px-4">
-                  <Plus className="w-6 h-6 text-gray-400" />
-                </div>
+        {droppedCompounds.length === 0 ? (
+          <div className="text-center">
+            <Beaker className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+            <p className="text-gray-500">Drop compounds here to react</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2 p-4 w-full">
+            {droppedCompounds.map((compound) => (
+              <div
+                key={compound.id}
+                className="flex items-center gap-2 bg-white/80 rounded-lg p-2 border"
+              >
+                <span className="font-bold text-lg">{compound.symbol}</span>
+                <span className="text-sm flex-1">{compound.name}</span>
+                <button
+                  onClick={() => removeCompound(compound.id)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-            </>
-          )}
-
-          {/* Bubbling animation during reaction */}
-          {isReacting && (
-            <div className="flex space-x-1">
-              {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                  style={{ animationDelay: `${i * 0.2}s` }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Control buttons */}
-      <div className="space-y-3">
+      {/* Action Buttons */}
+      <div className="flex gap-2 justify-center">
         <button
           onClick={performReaction}
           disabled={!canReact || isReacting}
           className={`
-            w-full py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2
+            flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300
             ${canReact && !isReacting
-              ? 'bg-primary text-white hover:bg-primary/90'
-              : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+              ? 'bg-lab-primary text-white hover:bg-lab-primary/90 hover:scale-105 shadow-lg'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }
           `}
         >
-          <Beaker className="w-4 h-4" />
+          <Zap className="w-5 h-5" />
           {isReacting ? 'Reacting...' : 'React!'}
         </button>
         
-        <button
-          onClick={clearFlask}
-          disabled={droppedCompounds.length === 0}
-          className="w-full py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Clear Flask
-        </button>
+        {droppedCompounds.length > 0 && (
+          <button
+            onClick={clearFlask}
+            className="px-4 py-3 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition-all"
+          >
+            Clear Flask
+          </button>
+        )}
       </div>
 
       {/* Instructions */}
-      <div className="text-center text-xs text-muted-foreground">
-        <p>Drag discovered compounds into the beaker to create new ones!</p>
+      <div className="text-center text-sm text-gray-600">
+        <p>Drag and drop discovered compounds into the flask to create new ones!</p>
+        <p className="text-xs mt-1">You need at least 2 compounds to perform a reaction.</p>
       </div>
     </div>
   );

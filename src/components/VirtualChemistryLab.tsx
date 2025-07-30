@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Beaker, BookOpen, Trophy, Atom } from 'lucide-react';
@@ -81,7 +81,79 @@ const VirtualChemistryLab: React.FC = () => {
     }
   };
 
-  // Sound effects (using Web Audio API with synthetic sounds)
+  // Background music
+  const backgroundMusic = useRef<AudioContext | null>(null);
+  const musicGain = useRef<GainNode | null>(null);
+  const musicOscillators = useRef<OscillatorNode[]>([]);
+
+  const startBackgroundMusic = () => {
+    if (backgroundMusic.current) return;
+    
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      backgroundMusic.current = audioContext;
+      
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 0.1; // Low volume
+      gainNode.connect(audioContext.destination);
+      musicGain.current = gainNode;
+      
+      // Create ambient chemistry lab sounds
+      const playAmbientNote = (frequency: number, duration: number, delay: number) => {
+        setTimeout(() => {
+          if (!backgroundMusic.current) return;
+          
+          const osc = backgroundMusic.current.createOscillator();
+          const gain = backgroundMusic.current.createGain();
+          
+          osc.connect(gain);
+          gain.connect(musicGain.current!);
+          
+          osc.frequency.value = frequency;
+          osc.type = 'sine';
+          
+          gain.gain.setValueAtTime(0, backgroundMusic.current.currentTime);
+          gain.gain.linearRampToValueAtTime(0.05, backgroundMusic.current.currentTime + 0.5);
+          gain.gain.linearRampToValueAtTime(0, backgroundMusic.current.currentTime + duration);
+          
+          osc.start();
+          osc.stop(backgroundMusic.current.currentTime + duration);
+          
+          musicOscillators.current.push(osc);
+        }, delay);
+      };
+      
+      // Play ambient lab atmosphere
+      const playAmbientLoop = () => {
+        if (!backgroundMusic.current) return;
+        
+        // Gentle bubbling and chemical atmosphere sounds
+        [261.63, 329.63, 392.00, 523.25].forEach((freq, i) => {
+          playAmbientNote(freq, 8, i * 2000);
+        });
+        
+        setTimeout(playAmbientLoop, 16000); // Loop every 16 seconds
+      };
+      
+      playAmbientLoop();
+    } catch (error) {
+      console.error('Could not start background music:', error);
+    }
+  };
+
+  const stopBackgroundMusic = () => {
+    musicOscillators.current.forEach(osc => {
+      try { osc.stop(); } catch (e) {}
+    });
+    musicOscillators.current = [];
+    
+    if (backgroundMusic.current) {
+      backgroundMusic.current.close();
+      backgroundMusic.current = null;
+    }
+  };
+
+  // Enhanced sound effects
   const playSound = (type: string) => {
     try {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -131,6 +203,32 @@ const VirtualChemistryLab: React.FC = () => {
           oscillator.start(audioContext.currentTime);
           oscillator.stop(audioContext.currentTime + 0.8);
           break;
+        case 'drop':
+          // Liquid drop sound
+          oscillator.frequency.value = 300;
+          oscillator.type = 'sine';
+          gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+          break;
+        case 'bubble':
+          // Gentle bubbling sound
+          oscillator.frequency.value = 150;
+          oscillator.type = 'sine';
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+          break;
+        case 'mix':
+          // Mixing/stirring sound
+          oscillator.frequency.value = 250;
+          oscillator.type = 'triangle';
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+          break;
+      }
+      
+      if (type !== 'reaction') {
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 1);
       }
     } catch (e) {
       console.log('Sound effect:', type);
@@ -211,7 +309,7 @@ const VirtualChemistryLab: React.FC = () => {
         playSound('reaction');
       }
       
-      return { success: true, product };
+      return { success: true, message: `Created ${product?.name}!`, discoveredCompound: product?.name };
     } else {
       // Failure
       playSound('error');
@@ -222,7 +320,7 @@ const VirtualChemistryLab: React.FC = () => {
         duration: 2000,
       });
       
-      return { success: false };
+      return { success: false, message: "These compounds don't react together" };
     }
   };
 
@@ -236,6 +334,17 @@ const VirtualChemistryLab: React.FC = () => {
     return progress >= target;
   }).reduce((sum, a) => sum + a.points, 0);
 
+  // Start background music on component mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      startBackgroundMusic();
+    }, 1000); // Start after 1 second
+    
+    return () => {
+      clearTimeout(timer);
+      stopBackgroundMusic();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -246,7 +355,14 @@ const VirtualChemistryLab: React.FC = () => {
             <Atom className="w-8 h-8" />
             <h1 className="text-3xl font-bold">Virtual Chemistry Lab Pro</h1>
           </div>
-          <p className="text-lg opacity-90 mb-6">Master chemistry through discovery and experimentation!</p>
+          <p className="text-lg opacity-90 mb-4">Master chemistry through discovery and experimentation!</p>
+          
+          <button
+            onClick={() => backgroundMusic.current ? stopBackgroundMusic() : startBackgroundMusic()}
+            className="text-sm text-white/80 hover:text-white transition-colors flask-cursor bg-white/20 px-3 py-1 rounded-lg mb-4"
+          >
+            🎵 {backgroundMusic.current ? 'Stop' : 'Start'} Lab Music
+          </button>
           
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
@@ -280,19 +396,19 @@ const VirtualChemistryLab: React.FC = () => {
       <div className="max-w-6xl mx-auto p-6">
         <Tabs defaultValue="discovery" className="w-full">
           <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:w-fit">
-            <TabsTrigger value="lab" className="flex items-center gap-2">
+            <TabsTrigger value="lab" className="flex items-center gap-2 flask-cursor">
               <Beaker className="w-4 h-4" />
               Lab
             </TabsTrigger>
-            <TabsTrigger value="discovery" className="flex items-center gap-2">
+            <TabsTrigger value="discovery" className="flex items-center gap-2 flask-cursor">
               <Atom className="w-4 h-4" />
               Discovery
             </TabsTrigger>
-            <TabsTrigger value="reactions" className="flex items-center gap-2">
+            <TabsTrigger value="reactions" className="flex items-center gap-2 flask-cursor">
               <BookOpen className="w-4 h-4" />
               Reactions
             </TabsTrigger>
-            <TabsTrigger value="achievements" className="flex items-center gap-2">
+            <TabsTrigger value="achievements" className="flex items-center gap-2 flask-cursor">
               <Trophy className="w-4 h-4" />
               Achievements
             </TabsTrigger>
@@ -322,6 +438,7 @@ const VirtualChemistryLab: React.FC = () => {
                   <ReactionFlask
                     onReaction={handleReaction}
                     compounds={compounds.filter(c => c.discovered)}
+                    playSound={playSound}
                   />
                 </div>
               </div>
