@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Sparkles, Beaker, FlaskConical } from 'lucide-react';
-import { Compound, reactions } from '../data/compounds';
+import { Compound, reactions, compounds } from '../data/compounds';
 
 interface CompoundModalProps {
   compound: Compound | null;
@@ -16,6 +16,11 @@ const CompoundModal: React.FC<CompoundModalProps> = ({ compound, isOpen, onClose
   // Find reaction that produces this compound
   const findProductionReaction = () => {
     return reactions.find(reaction => reaction.output === compound.id);
+  };
+
+  // Get compound info by id
+  const getCompoundInfo = (id: string) => {
+    return compounds.find(comp => comp.id === id);
   };
 
   const getRarityColor = () => {
@@ -113,25 +118,51 @@ const CompoundModal: React.FC<CompoundModalProps> = ({ compound, isOpen, onClose
                   <div className="mt-3">
                     <div className="flex items-center gap-2 mb-2">
                       <FlaskConical className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-medium text-blue-600">Synthesis Reaction</span>
+                      <span className="text-sm font-medium text-blue-600">How to Unlock</span>
                     </div>
                     <div className="bg-white p-3 rounded-lg border">
-                      <div className="text-sm font-medium text-gray-800 mb-1">{reaction.name}</div>
-                      <div className="text-xs text-gray-600 font-mono">{reaction.description}</div>
-                      <div className="mt-2">
-                        <span className="text-xs text-gray-500">Required components: </span>
-                        <span className="text-xs font-medium text-blue-600">
-                          {reaction.inputs.map(input => input.toUpperCase()).join(', ')}
-                        </span>
+                      <div className="text-sm font-medium text-gray-800 mb-2">{reaction.name}</div>
+                      <div className="text-xs text-gray-600 font-mono mb-3">{reaction.description}</div>
+                      
+                      <div className="space-y-2">
+                        <span className="text-xs font-medium text-gray-700">Required Compounds:</span>
+                        <div className="grid grid-cols-2 gap-2">
+                          {reaction.inputs.map((inputId, index) => {
+                            const inputCompound = getCompoundInfo(inputId);
+                            if (inputCompound) {
+                              return (
+                                <div key={index} className={`p-2 rounded-lg border text-center ${inputCompound.discovered ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                                  <div className="text-lg font-bold text-lab-primary">{inputCompound.symbol}</div>
+                                  <div className="text-xs font-medium">{inputCompound.name}</div>
+                                  <div className={`text-xs ${inputCompound.discovered ? 'text-green-600' : 'text-red-600'}`}>
+                                    {inputCompound.discovered ? '✓ Available' : '✗ Locked'}
+                                  </div>
+                                </div>
+                              );
+                            }
+                            return (
+                              <div key={index} className="p-2 rounded-lg border bg-gray-50 border-gray-200 text-center">
+                                <div className="text-lg font-bold text-lab-primary">{inputId.toUpperCase()}</div>
+                                <div className="text-xs text-gray-600">Unknown</div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
                   </div>
                 );
               } else if (compound.synthesisHint) {
                 return (
-                  <p className="text-xs text-gray-600 mt-1 italic">
-                    Hint: {compound.synthesisHint}
-                  </p>
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FlaskConical className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-600">Synthesis Hint</span>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg border">
+                      <p className="text-sm text-gray-600 italic">{compound.synthesisHint}</p>
+                    </div>
+                  </div>
                 );
               }
               return null;
