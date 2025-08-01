@@ -8,9 +8,10 @@ interface DiscoveryTabProps {
   onCompoundClick: (compound: Compound) => void;
   onDragStart: (compound: Compound) => void;
   onDragEnd: () => void;
+  onAddToFlask?: (compound: Compound) => void;
 }
 
-const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ compounds, onCompoundClick, onDragStart, onDragEnd }) => {
+const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ compounds, onCompoundClick, onDragStart, onDragEnd, onAddToFlask }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [showDiscoveredOnly, setShowDiscoveredOnly] = useState(false);
@@ -92,13 +93,14 @@ const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ compounds, onCompoundClick,
       {/* Compounds grid - matches the reference layout */}
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
         {filteredCompounds.map(compound => (
-          <CompoundCard
-            key={compound.id}
-            compound={compound}
-            onClick={onCompoundClick}
-            onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
-          />
+            <CompoundCard
+              key={compound.id}
+              compound={compound}
+              onClick={onCompoundClick}
+              onDragStart={onDragStart}
+              onDragEnd={onDragEnd}
+              onAddToFlask={onAddToFlask}
+            />
         ))}
       </div>
 
