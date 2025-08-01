@@ -357,13 +357,6 @@ const VirtualChemistryLab: React.FC = () => {
           </div>
           <p className="text-lg opacity-90 mb-4">Master chemistry through discovery and experimentation!</p>
           
-          <button
-            onClick={() => backgroundMusic.current ? stopBackgroundMusic() : startBackgroundMusic()}
-            className="text-sm text-white/80 hover:text-white transition-colors flask-cursor bg-white/20 px-3 py-1 rounded-lg mb-4"
-          >
-            🎵 {backgroundMusic.current ? 'Stop' : 'Start'} Lab Music
-          </button>
-          
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div className="bg-white/20 rounded-lg p-3">
