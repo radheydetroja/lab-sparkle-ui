@@ -196,8 +196,8 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
         </div>
 
         {/* Compound Name */}
-        <h3 className={`text-sm font-bold leading-tight ${discovered ? 'text-white drop-shadow-lg' : 'text-gray-400'} max-w-full truncate px-1`}>
-          {name}
+        <h3 className={`text-sm font-bold leading-tight ${discovered ? 'text-white drop-shadow-lg' : 'text-gray-400'} text-center px-1 min-h-[2.5rem] flex items-center justify-center`}>
+          <span className="break-words hyphens-auto">{name}</span>
         </h3>
 
         {discovered ? (
