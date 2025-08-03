@@ -9,9 +9,10 @@ interface DiscoveryTabProps {
   onDragStart: (compound: Compound) => void;
   onDragEnd: () => void;
   onAddToFlask?: (compound: Compound) => void;
+  isLabMode?: boolean;
 }
 
-const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ compounds, onCompoundClick, onDragStart, onDragEnd, onAddToFlask }) => {
+const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ compounds, onCompoundClick, onDragStart, onDragEnd, onAddToFlask, isLabMode = false }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [showDiscoveredOnly, setShowDiscoveredOnly] = useState(false);
@@ -97,9 +98,10 @@ const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ compounds, onCompoundClick,
               key={compound.id}
               compound={compound}
               onClick={onCompoundClick}
-              onDragStart={onDragStart}
-              onDragEnd={onDragEnd}
-              onAddToFlask={onAddToFlask}
+              onDragStart={isLabMode ? onDragStart : () => {}}
+              onDragEnd={isLabMode ? onDragEnd : () => {}}
+              onAddToFlask={isLabMode ? onAddToFlask : undefined}
+              enableDrag={isLabMode}
             />
         ))}
       </div>

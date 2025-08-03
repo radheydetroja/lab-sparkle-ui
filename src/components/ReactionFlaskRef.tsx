@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Beaker, X, Zap } from 'lucide-react';
 import { Compound } from '../data/compounds';
 
@@ -8,28 +8,16 @@ interface ReactionFlaskProps {
   playSound: (type: string) => void;
 }
 
-// Export addToFlask function for tap-to-select
-export const useFlaskState = () => {
-  const [droppedCompounds, setDroppedCompounds] = useState<Compound[]>([]);
-  
-  const addToFlask = (compound: Compound) => {
-    setDroppedCompounds(prev => {
-      if (!prev.find(c => c.id === compound.id)) {
-        return [...prev, compound];
-      }
-      return prev;
-    });
-  };
-  
-  return { droppedCompounds, setDroppedCompounds, addToFlask };
-};
+export interface ReactionFlaskRef {
+  addToFlask: (compound: Compound) => void;
+}
 
-const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds, playSound }) => {
+const ReactionFlask = forwardRef<ReactionFlaskRef, ReactionFlaskProps>(({ onReaction, compounds, playSound }, ref) => {
   const [droppedCompounds, setDroppedCompounds] = useState<Compound[]>([]);
   const [isReacting, setIsReacting] = useState(false);
   const [shakeError, setShakeError] = useState(false);
 
-  // Expose addToFlask function for tap-to-select
+  // Expose addToFlask function for tap-to-select via ref
   const addToFlask = (compound: Compound) => {
     setDroppedCompounds(prev => {
       // Allow multiple instances of the same compound
@@ -37,6 +25,10 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds, pl
     });
     playSound('drop'); // Play drop sound for tap-to-add
   };
+
+  useImperativeHandle(ref, () => ({
+    addToFlask
+  }));
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -47,14 +39,13 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds, pl
     const compoundId = e.dataTransfer.getData('text/plain');
     const compound = compounds.find(c => c.id === compoundId);
     
-    if (compound && !droppedCompounds.find(c => c.id === compoundId)) {
-      setDroppedCompounds(prev => [...prev, compound]);
-      playSound('drop'); // Play drop sound
+    if (compound) {
+      addToFlask(compound);
     }
   };
 
-  const removeCompound = (compoundId: string) => {
-    setDroppedCompounds(prev => prev.filter(c => c.id !== compoundId));
+  const removeCompound = (index: number) => {
+    setDroppedCompounds(prev => prev.filter((_, i) => i !== index));
   };
 
   const clearFlask = () => {
@@ -118,16 +109,16 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds, pl
             <p className="text-white/60 text-sm mt-1">Minimum 2 elements required</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-2 p-4 w-full">
-            {droppedCompounds.map((compound) => (
+          <div className="grid grid-cols-2 gap-2 p-4 w-full max-h-44 overflow-y-auto">
+            {droppedCompounds.map((compound, index) => (
               <div
-                key={compound.id}
+                key={`${compound.id}-${index}`}
                 className="flex items-center gap-2 bg-white/80 rounded-lg p-2 border"
               >
                 <span className="font-bold text-lg">{compound.symbol}</span>
                 <span className="text-sm flex-1">{compound.name}</span>
                 <button
-                  onClick={() => removeCompound(compound.id)}
+                  onClick={() => removeCompound(index)}
                   className="text-red-500 hover:text-red-700"
                 >
                   <X className="w-4 h-4" />
@@ -146,7 +137,7 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds, pl
           className={`
             flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300
             ${canReact && !isReacting
-              ? 'bg-lab-primary text-white hover:bg-lab-primary/90 hover:scale-105 shadow-lg'
+              ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-500 hover:to-blue-500 hover:scale-105 shadow-lg'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }
           `}
@@ -166,14 +157,14 @@ const ReactionFlask: React.FC<ReactionFlaskProps> = ({ onReaction, compounds, pl
       </div>
 
       {/* Instructions */}
-      <div className="text-center text-sm text-gray-600">
-        <p>Drag and drop discovered compounds into the flask to create new ones!</p>
+      <div className="text-center text-sm text-white/60">
+        <p>Drag and drop or tap compounds to add them to the flask!</p>
         <p className="text-xs mt-1">You need at least 2 compounds to perform a reaction.</p>
       </div>
     </div>
   );
-};
+});
 
-// Export the component with addToFlask function exposed
-export { ReactionFlask as default };
-export type { ReactionFlaskProps };
+ReactionFlask.displayName = 'ReactionFlask';
+
+export default ReactionFlask;

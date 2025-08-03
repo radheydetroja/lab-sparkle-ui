@@ -10,6 +10,7 @@ interface CompoundCardProps {
   onAddToFlask?: (compound: Compound) => void;
   isInFlask?: boolean;
   isDragging?: boolean;
+  enableDrag?: boolean;
 }
 
 const CompoundCard: React.FC<CompoundCardProps> = ({ 
@@ -19,7 +20,8 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
   onClick, 
   onAddToFlask,
   isInFlask = false,
-  isDragging = false 
+  isDragging = false,
+  enableDrag = true
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { name, symbol, category, rarity, description, mw, points, discovered, synthesisHint } = compound;
@@ -111,7 +113,13 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
     if (isDragging) return;
     
     if (discovered) {
-      onClick?.(compound);
+      if (enableDrag && onAddToFlask) {
+        // In lab mode, clicking adds to flask
+        onAddToFlask(compound);
+      } else {
+        // In elements mode or for details, show modal
+        onClick?.(compound);
+      }
     }
   };
 
@@ -136,9 +144,9 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
         ${isHovered ? 'shadow-2xl scale-105' : ''}
         backdrop-blur-sm border-white/20
       `}
-      draggable={discovered}
-      onDragStart={handleDragStart}
-      onDragEnd={onDragEnd}
+      draggable={enableDrag && discovered}
+      onDragStart={enableDrag ? handleDragStart : undefined}
+      onDragEnd={enableDrag ? onDragEnd : undefined}
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -154,7 +162,7 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
       )}
 
       {/* Add to flask button for discovered compounds */}
-      {discovered && onAddToFlask && (
+      {discovered && onAddToFlask && enableDrag && (
         <button
           onClick={handleAddToFlask}
           className="absolute top-2 left-2 bg-green-500/80 hover:bg-green-400 rounded-full p-1.5 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 transform scale-0 group-hover:scale-100"
@@ -196,7 +204,7 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
 
             {/* Quick action hint */}
             <div className="text-xs text-white/80 opacity-0 group-hover:opacity-100 transition-opacity">
-              Tap to view • Drag to react
+              {enableDrag ? 'Tap to add • Drag to react' : 'Tap to view details'}
             </div>
           </>
         ) : (

@@ -5,7 +5,7 @@ import { Beaker, BookOpen, Trophy, Atom, Sparkles } from 'lucide-react';
 
 import { compounds as initialCompounds, reactions, achievements, Compound, Achievement } from '../data/compounds';
 import DiscoveryTab from './DiscoveryTab';
-import ReactionFlask from './ReactionFlask';
+import ReactionFlask, { ReactionFlaskRef } from './ReactionFlaskRef';
 import CompoundModal from './CompoundModal';
 import Achievements from './Achievements';
 
@@ -16,6 +16,12 @@ const VirtualChemistryLab: React.FC = () => {
   const [completedReactions, setCompletedReactions] = useState(0);
   const [draggedCompound, setDraggedCompound] = useState<Compound | null>(null);
   const { toast } = useToast();
+  const reactionFlaskRef = useRef<ReactionFlaskRef>(null);
+
+  // Function to add compound to flask via tap
+  const handleAddToFlask = (compound: Compound) => {
+    reactionFlaskRef.current?.addToFlask(compound);
+  };
 
   // Helper functions - declared first to avoid temporal dead zone errors
   const calculateAchievementProgress = (achievement: Achievement) => {
@@ -477,12 +483,14 @@ const VirtualChemistryLab: React.FC = () => {
                       <span className="text-green-400 text-sm font-bold">{compounds.filter(c => c.discovered).length} Discovered</span>
                     </div>
                   </div>
-                  <DiscoveryTab
-                    compounds={compounds.filter(c => c.discovered)}
-                    onCompoundClick={handleCompoundClick}
-                    onDragStart={setDraggedCompound}
-                    onDragEnd={() => setDraggedCompound(null)}
-                  />
+                   <DiscoveryTab
+                     compounds={compounds.filter(c => c.discovered)}
+                     onCompoundClick={handleCompoundClick}
+                     onDragStart={setDraggedCompound}
+                     onDragEnd={() => setDraggedCompound(null)}
+                     onAddToFlask={handleAddToFlask}
+                     isLabMode={true}
+                   />
                 </div>
               </div>
               
@@ -495,11 +503,12 @@ const VirtualChemistryLab: React.FC = () => {
                     </div>
                     <h3 className="text-xl font-bold text-white">Reaction Lab</h3>
                   </div>
-                  <ReactionFlask
-                    onReaction={handleReaction}
-                    compounds={compounds.filter(c => c.discovered)}
-                    playSound={playSound}
-                  />
+                   <ReactionFlask
+                     ref={reactionFlaskRef}
+                     onReaction={handleReaction}
+                     compounds={compounds.filter(c => c.discovered)}
+                     playSound={playSound}
+                   />
                 </div>
               </div>
             </div>
@@ -516,12 +525,13 @@ const VirtualChemistryLab: React.FC = () => {
                   <span className="text-blue-400 text-sm font-bold">Tap or Drag to React</span>
                 </div>
               </div>
-              <DiscoveryTab
-                compounds={compounds}
-                onCompoundClick={handleCompoundClick}
-                onDragStart={setDraggedCompound}
-                onDragEnd={() => setDraggedCompound(null)}
-              />
+               <DiscoveryTab
+                 compounds={compounds}
+                 onCompoundClick={handleCompoundClick}
+                 onDragStart={() => {}} // No drag functionality in elements tab
+                 onDragEnd={() => {}}
+                 isLabMode={false}
+               />
             </div>
           </TabsContent>
 
