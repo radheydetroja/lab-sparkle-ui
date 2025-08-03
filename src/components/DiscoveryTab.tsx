@@ -44,8 +44,8 @@ const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ compounds, onCompoundClick,
             <div className="w-4 h-4 bg-white rounded-sm" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-primary">Compound Inventory ({discoveredCount}/{totalCompounds})</h2>
-            <p className="text-sm text-muted-foreground">Drag compounds to the reaction beaker to create new substances</p>
+            <h2 className="text-xl font-bold text-primary">Element Discovery ({discoveredCount}/{totalCompounds})</h2>
+            <p className="text-sm text-muted-foreground">Explore and learn about chemical elements and compounds</p>
           </div>
         </div>
       </div>

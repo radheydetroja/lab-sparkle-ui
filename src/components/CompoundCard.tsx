@@ -133,16 +133,17 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
   return (
     <div
       className={`
-        relative rounded-xl border-2 cursor-pointer transition-all duration-300 flask-cursor group
+        relative rounded-2xl border-2 cursor-pointer transition-all duration-500 flask-cursor group
         bg-gradient-to-br ${getCategoryGradient()} ${getRarityGlow()}
         ${discovered 
-          ? 'hover:scale-105 hover:shadow-2xl transform hover:-translate-y-2' 
+          ? 'hover:scale-110 hover:shadow-2xl transform hover:-translate-y-3 hover:rotate-1' 
           : 'hover:scale-105 opacity-70'
         }
         ${isDragging ? 'opacity-50 dragging scale-95' : ''}
         ${isInFlask ? 'scale-90' : ''}
-        ${isHovered ? 'shadow-2xl scale-105' : ''}
-        backdrop-blur-sm border-white/20
+        ${isHovered ? 'shadow-2xl scale-110 -translate-y-2' : ''}
+        backdrop-blur-sm border-white/30 overflow-hidden
+        before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:via-transparent before:to-white/20 before:opacity-0 before:transition-opacity before:duration-500 hover:before:opacity-100
       `}
       draggable={enableDrag && discovered}
       onDragStart={enableDrag ? handleDragStart : undefined}
@@ -171,33 +172,45 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
         </button>
       )}
 
-      {/* Discovered glow effect */}
+      {/* Discovered glow effect and decorative elements */}
       {discovered && (
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/20 via-transparent to-white/20 opacity-50" />
+        <>
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 via-transparent to-white/20 opacity-50" />
+          {/* Decorative corner accents */}
+          <div className="absolute top-0 left-0 w-6 h-6 border-l-2 border-t-2 border-white/40 rounded-tl-2xl"></div>
+          <div className="absolute top-0 right-0 w-6 h-6 border-r-2 border-t-2 border-white/40 rounded-tr-2xl"></div>
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-l-2 border-b-2 border-white/40 rounded-bl-2xl"></div>
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-r-2 border-b-2 border-white/40 rounded-br-2xl"></div>
+        </>
       )}
 
-      <div className="relative p-4 text-center space-y-2">
-        {/* Chemical Symbol */}
-        <div className={`text-3xl font-bold ${discovered ? 'text-white drop-shadow-lg' : 'text-gray-300'}`}>
-          {symbol}
+      <div className="relative p-6 text-center space-y-3">
+        {/* Chemical Symbol with decorative background */}
+        <div className="relative">
+          <div className={`text-4xl font-black ${discovered ? 'text-white drop-shadow-2xl' : 'text-gray-300'} relative z-10`}>
+            {symbol}
+          </div>
+          {discovered && (
+            <div className="absolute inset-0 bg-white/10 rounded-full blur-xl scale-150 -z-10"></div>
+          )}
         </div>
 
         {/* Compound Name */}
-        <h3 className={`text-sm font-bold leading-tight ${discovered ? 'text-white drop-shadow-md' : 'text-gray-400'}`}>
+        <h3 className={`text-sm font-bold leading-tight ${discovered ? 'text-white drop-shadow-lg' : 'text-gray-400'} max-w-full truncate px-1`}>
           {name}
         </h3>
 
         {discovered ? (
           <>
-            {/* Category pill */}
-            <div className="inline-block text-xs font-bold px-3 py-1 rounded-full bg-black/30 text-white backdrop-blur-sm">
+            {/* Category pill with enhanced styling */}
+            <div className="inline-block text-xs font-bold px-4 py-1.5 rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 shadow-lg">
               {category.toUpperCase()}
             </div>
 
-            {/* Points with icon */}
+            {/* Points with icon and enhanced styling */}
             {points > 0 && (
-              <div className="flex items-center justify-center gap-1 text-xs font-bold text-yellow-300">
-                <Sparkles className="w-3 h-3" />
+              <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-yellow-300 bg-yellow-500/20 rounded-full px-3 py-1 backdrop-blur-sm border border-yellow-400/30">
+                <Sparkles className="w-3 h-3 animate-pulse" />
                 +{points} XP
               </div>
             )}
@@ -210,14 +223,14 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
         ) : (
           <>
             {/* Synthesis hint for locked compounds */}
-            <div className="mt-2 p-3 bg-black/40 rounded-lg backdrop-blur-sm">
-              <p className="text-xs text-white/90 font-medium">
+            <div className="mt-3 p-3 bg-black/50 rounded-xl backdrop-blur-md border border-white/20 shadow-inner">
+              <p className="text-xs text-white/90 font-medium leading-relaxed">
                 🔬 {synthesisHint || 'Recipe unknown'}
               </p>
             </div>
             
             {/* Unlock hint */}
-            <div className="text-xs text-white/60">
+            <div className="text-xs text-white/70 font-medium">
               Complete reactions to unlock
             </div>
           </>
