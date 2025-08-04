@@ -92,7 +92,7 @@ const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ compounds, onCompoundClick,
       </div>
 
       {/* Compounds grid - responsive layout */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-3">
         {filteredCompounds.map(compound => (
             <CompoundCard
               key={compound.id}

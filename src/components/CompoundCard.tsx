@@ -184,10 +184,10 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
         </>
       )}
 
-      <div className="relative p-6 text-center space-y-3">
+      <div className="relative p-3 text-center space-y-2">
         {/* Chemical Symbol with decorative background */}
         <div className="relative">
-          <div className={`text-4xl font-black ${discovered ? 'text-white drop-shadow-2xl' : 'text-gray-300'} relative z-10`}>
+          <div className={`text-2xl font-black ${discovered ? 'text-white drop-shadow-2xl' : 'text-gray-300'} relative z-10`}>
             {symbol}
           </div>
           {discovered && (
@@ -196,8 +196,8 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
         </div>
 
         {/* Compound Name */}
-        <h3 className={`text-sm font-bold leading-tight ${discovered ? 'text-white drop-shadow-lg' : 'text-gray-400'} text-center px-1 min-h-[2.5rem] flex items-center justify-center`}>
-          <span className="break-words hyphens-auto">{name}</span>
+        <h3 className={`text-xs font-bold leading-tight ${discovered ? 'text-white drop-shadow-lg' : 'text-gray-400'} text-center px-2 line-clamp-2`}>
+          {name}
         </h3>
 
         {discovered ? (
