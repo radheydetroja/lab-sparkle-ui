@@ -450,22 +450,22 @@ const VirtualChemistryLab: React.FC = () => {
       {/* Game Content */}
       <div className="relative z-10 max-w-7xl mx-auto p-4">
         <Tabs defaultValue="discovery" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:w-fit bg-black/40 backdrop-blur-sm border border-white/20">
-            <TabsTrigger value="lab" className="flex items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
-              <Beaker className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden xs:inline">LAB</span>
+          <TabsList className="grid w-full grid-cols-4 lg:w-fit bg-black/40 backdrop-blur-sm border border-white/20">
+            <TabsTrigger value="lab" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm px-2 sm:px-3 py-2">
+              <Beaker className="w-4 h-4" />
+              <span className="text-xs sm:text-sm">LAB</span>
             </TabsTrigger>
-            <TabsTrigger value="discovery" className="flex items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
-              <Atom className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden xs:inline">ELEMENTS</span>
+            <TabsTrigger value="discovery" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm px-2 sm:px-3 py-2">
+              <Atom className="w-4 h-4" />
+              <span className="text-xs sm:text-sm">ELEMENTS</span>
             </TabsTrigger>
-            <TabsTrigger value="reactions" className="flex items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
-              <BookOpen className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden xs:inline">RECIPES</span>
+            <TabsTrigger value="reactions" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm px-2 sm:px-3 py-2">
+              <BookOpen className="w-4 h-4" />
+              <span className="text-xs sm:text-sm">RECIPES</span>
             </TabsTrigger>
-            <TabsTrigger value="achievements" className="flex items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
-              <Trophy className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden xs:inline">BADGES</span>
+            <TabsTrigger value="achievements" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm px-2 sm:px-3 py-2">
+              <Trophy className="w-4 h-4" />
+              <span className="text-xs sm:text-sm">BADGES</span>
             </TabsTrigger>
           </TabsList>
 
