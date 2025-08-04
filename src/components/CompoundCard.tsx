@@ -184,9 +184,9 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
         </>
       )}
 
-      <div className="relative p-2 text-center space-y-1 flex flex-col justify-between h-full">
+      <div className="relative p-2 text-center flex flex-col h-full">
         {/* Chemical Symbol with decorative background */}
-        <div className="relative flex-shrink-0">
+        <div className="relative flex-shrink-0 mb-2">
           <div className={`text-lg sm:text-xl font-black ${discovered ? 'text-white drop-shadow-2xl' : 'text-gray-300'} relative z-10`}>
             {symbol}
           </div>
@@ -196,32 +196,32 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
         </div>
 
         {/* Compound Name */}
-        <h3 className={`text-xs font-bold leading-tight ${discovered ? 'text-white drop-shadow-lg' : 'text-gray-400'} text-center px-1 line-clamp-2 min-h-[2.5rem] flex items-center justify-center`}>
+        <h3 className={`text-xs font-bold leading-tight ${discovered ? 'text-white drop-shadow-lg' : 'text-gray-400'} text-center px-1 line-clamp-2 min-h-[2rem] flex items-center justify-center mb-2`}>
           {name}
         </h3>
 
         {discovered ? (
-          <div className="flex-1 flex flex-col justify-end space-y-1">
+          <div className="flex-1 flex flex-col justify-end space-y-2 min-h-[3rem]">
             {/* Category pill with enhanced styling */}
-            <div className="inline-block text-xs font-bold px-2 py-1 rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 shadow-lg">
+            <div className="inline-block text-xs font-bold px-2 py-1 rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 shadow-lg mx-auto">
               {category.toUpperCase()}
             </div>
 
             {/* Points with icon and enhanced styling */}
             {points > 0 && (
-              <div className="flex items-center justify-center gap-1 text-xs font-bold text-yellow-300 bg-yellow-500/20 rounded-full px-2 py-0.5 backdrop-blur-sm border border-yellow-400/30">
+              <div className="flex items-center justify-center gap-1 text-xs font-bold text-yellow-300 bg-yellow-500/20 rounded-full px-2 py-0.5 backdrop-blur-sm border border-yellow-400/30 mx-auto">
                 <Sparkles className="w-3 h-3 animate-pulse" />
                 +{points}
               </div>
             )}
 
             {/* Quick action hint */}
-            <div className="text-xs text-white/80 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="text-xs text-white/80 opacity-0 group-hover:opacity-100 transition-opacity mt-1">
               {enableDrag ? 'Tap to add' : 'Tap to view'}
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col justify-end space-y-1">
+          <div className="flex-1 flex flex-col justify-end space-y-2">
             {/* Synthesis hint for locked compounds */}
             <div className="p-2 bg-black/50 rounded-xl backdrop-blur-md border border-white/20 shadow-inner">
               <p className="text-xs text-white/90 font-medium leading-relaxed line-clamp-2">
@@ -230,7 +230,7 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
             </div>
             
             {/* Unlock hint */}
-            <div className="text-xs text-white/70 font-medium">
+            <div className="text-xs text-white/70 font-medium mt-1">
               Unlock via reactions
             </div>
           </div>
