@@ -450,22 +450,22 @@ const VirtualChemistryLab: React.FC = () => {
       {/* Game Content */}
       <div className="relative z-10 max-w-7xl mx-auto p-4">
         <Tabs defaultValue="discovery" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:w-fit bg-black/40 backdrop-blur-sm border border-white/20">
-            <TabsTrigger value="lab" className="flex items-center gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white">
-              <Beaker className="w-4 h-4" />
-              LAB
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:w-fit bg-black/40 backdrop-blur-sm border border-white/20">
+            <TabsTrigger value="lab" className="flex items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
+              <Beaker className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">LAB</span>
             </TabsTrigger>
-            <TabsTrigger value="discovery" className="flex items-center gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white">
-              <Atom className="w-4 h-4" />
-              ELEMENTS
+            <TabsTrigger value="discovery" className="flex items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
+              <Atom className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">ELEMENTS</span>
             </TabsTrigger>
-            <TabsTrigger value="reactions" className="flex items-center gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white">
-              <BookOpen className="w-4 h-4" />
-              RECIPES
+            <TabsTrigger value="reactions" className="flex items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
+              <BookOpen className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">RECIPES</span>
             </TabsTrigger>
-            <TabsTrigger value="achievements" className="flex items-center gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white">
-              <Trophy className="w-4 h-4" />
-              BADGES
+            <TabsTrigger value="achievements" className="flex items-center gap-1 sm:gap-2 flask-cursor text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
+              <Trophy className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">BADGES</span>
             </TabsTrigger>
           </TabsList>
 
@@ -521,9 +521,6 @@ const VirtualChemistryLab: React.FC = () => {
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-white">Element Discovery</h3>
-                <div className="ml-auto bg-blue-500/20 border border-blue-400/50 rounded-lg px-3 py-1">
-                  <span className="text-blue-400 text-sm font-bold">Tap or Drag to React</span>
-                </div>
               </div>
                <DiscoveryTab
                  compounds={compounds}
@@ -552,46 +549,46 @@ const VirtualChemistryLab: React.FC = () => {
                   return (
                     <div
                       key={reaction.id}
-                      className={`p-6 rounded-xl border-2 transition-all backdrop-blur-sm ${
+                      className={`p-4 sm:p-6 rounded-xl border-2 transition-all backdrop-blur-sm ${
                         isCompleted 
                           ? 'bg-green-500/20 border-green-400/50' 
                           : 'bg-white/10 border-white/20'
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-4">
-                           <div className="flex items-center gap-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-3">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                           <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
                              {inputCompounds.map((compound, index) => (
                                <React.Fragment key={compound?.id}>
-                                 <span className="font-mono font-bold text-yellow-400 text-lg bg-black/30 px-2 py-1 rounded">
+                                 <span className="font-mono font-bold text-yellow-400 text-sm sm:text-lg bg-black/30 px-2 py-1 rounded whitespace-nowrap">
                                    {compound?.symbol}
                                  </span>
-                                {index < inputCompounds.length - 1 && <span className="text-white text-xl">+</span>}
+                                {index < inputCompounds.length - 1 && <span className="text-white text-lg sm:text-xl">+</span>}
                               </React.Fragment>
                             ))}
                           </div>
-                          <span className="text-2xl text-purple-400">⚡</span>
-                           <span className="font-mono font-bold text-cyan-400 text-lg bg-black/30 px-2 py-1 rounded">
+                          <span className="text-xl sm:text-2xl text-purple-400">⚡</span>
+                           <span className="font-mono font-bold text-cyan-400 text-sm sm:text-lg bg-black/30 px-2 py-1 rounded whitespace-nowrap">
                              {outputCompound?.symbol}
                            </span>
                         </div>
                         
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-shrink-0">
                           {isCompleted ? (
-                            <div className="bg-green-500/30 border border-green-400/50 rounded-lg px-3 py-1">
-                              <span className="text-green-400 font-bold text-sm">✨ MASTERED</span>
+                            <div className="bg-green-500/30 border border-green-400/50 rounded-lg px-2 sm:px-3 py-1">
+                              <span className="text-green-400 font-bold text-xs sm:text-sm whitespace-nowrap">✨ MASTERED</span>
                             </div>
                           ) : (
-                            <div className="bg-orange-500/30 border border-orange-400/50 rounded-lg px-3 py-1">
-                              <span className="text-orange-400 font-bold text-sm">🔒 LOCKED</span>
+                            <div className="bg-orange-500/30 border border-orange-400/50 rounded-lg px-2 sm:px-3 py-1">
+                              <span className="text-orange-400 font-bold text-xs sm:text-sm whitespace-nowrap">🔒 LOCKED</span>
                             </div>
                           )}
                         </div>
                       </div>
                       
                       <div>
-                        <h3 className="font-bold text-white text-lg">{reaction.name}</h3>
-                        <p className="text-sm text-gray-300 mt-1">{reaction.description}</p>
+                        <h3 className="font-bold text-white text-base sm:text-lg break-words">{reaction.name}</h3>
+                        <p className="text-xs sm:text-sm text-gray-300 mt-1 break-words leading-relaxed">{reaction.description}</p>
                       </div>
                     </div>
                   );

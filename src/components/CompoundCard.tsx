@@ -133,7 +133,7 @@ const CompoundCard: React.FC<CompoundCardProps> = ({
   return (
     <div
       className={`
-        relative rounded-2xl border-2 cursor-pointer transition-all duration-500 flask-cursor group
+        relative rounded-2xl border-2 cursor-pointer transition-all duration-500 flask-cursor group aspect-square
         bg-gradient-to-br ${getCategoryGradient()} ${getRarityGlow()}
         ${discovered 
           ? 'hover:scale-110 hover:shadow-2xl transform hover:-translate-y-3 hover:rotate-1' 
